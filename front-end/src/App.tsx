@@ -25,6 +25,14 @@ const App = () => {
         setDrawerOpen(!drawerOpen);
     };
 
+    const handleMouseEnterTagFooter = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.currentTarget.style.color = 'rgba(128, 255, 216, 0.73)';
+    };
+
+    const handleMouseLeaveTagFooter = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.currentTarget.style.color = 'white';
+    };
+
     return (
         <Router>
             <div style={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
@@ -112,8 +120,20 @@ const App = () => {
                 <footer>
                     <AppBar position="sticky">
                         <Toolbar>
-                            <Typography variant="h6" sx={{flexGrow: 1}}>
+                            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                                <a
+                                    style={{
+                                        color: 'white',
+                                        textDecoration: 'none',
+                                    }}
+                                    href="https://github.com/Vidigal-code/nslt-challenge"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onMouseEnter={handleMouseEnterTagFooter}
+                                    onMouseLeave={handleMouseLeaveTagFooter}
+                                >
                                 Vidigal-Code
+                                </a>
                             </Typography>
                             <Button
                                 color="inherit"
