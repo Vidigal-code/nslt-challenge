@@ -11,7 +11,6 @@ docker run -d --name localstack -p 4566:4566 -e DOCKER_HOST=unix:///var/run/dock
 
 ---
 
-
 Sure! Here's the explanation for each script in your `package.json` file in Markdown format.
 
 ```markdown

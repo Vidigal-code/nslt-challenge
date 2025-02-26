@@ -4,6 +4,34 @@
 
 The scripts defined in `package.json` are commands that you can run using a Node.js package manager (like `npm` or `yarn`). They are used to automate tasks such as starting the development server, building the application, or generating component documentation in Storybook. Below is the explanation of the defined scripts:
 
+If you're looking to add a script for running Jest tests in your `package.json` and also want to document your commands (similar to how you documented your existing scripts), here's how you can do it.
+
+### Adding Jest Test Script to `package.json`:
+
+1. Add a new script for running Jest tests.
+2. Provide a description for it, similar to the structure you've already followed.
+
+### Updated `package.json` with Jest Test Script
+
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test": "jest --watch"  
+  }
+}
+```
+
+### Documenting the Scripts:
+
+Here is a detailed breakdown of all the commands in your `scripts` section, including the `test` script for Jest.
+
+---
+
 ### 1. `dev`
 - **Command:** `"vite"`
 - **Description:** This command starts the development server using Vite, a modern and fast build tool for frontend projects. The server will run in development mode, and the application will automatically reload whenever there are changes to the files.
@@ -24,6 +52,18 @@ The scripts defined in `package.json` are commands that you can run using a Node
 - **Command:** `"storybook build"`
 - **Description:** This command builds the Storybook static site, compiling all the UI components and documentation into a static output that can be deployed or served. It generates a `storybook-static/` folder containing the production-ready build of the Storybook site.
 
+### 6. `test`
+- **Command:** `"jest --watch"`
+- **Description:** This command runs Jest in watch mode, which will automatically re-run the tests when you make changes to the code. It's helpful for continuous testing during development. Jest is a testing framework used for unit and integration tests in JavaScript and TypeScript applications.
+
+---
+
+
+
+
+This will execute Jest in watch mode, so tests will be rerun automatically as you make changes to your code.
+
+Let me know if you need any more details or if you'd like further clarification!
 ---
 
 # Information
