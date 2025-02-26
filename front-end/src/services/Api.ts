@@ -318,7 +318,35 @@ export const deleteOrder = async (orderId: string) => {
 
 
 
+/**
+ * Fetches dashboard data based on the provided filters from the API.
+ *
+ * @param {Object} filters - An object containing key-value pairs for filtering the dashboard data.
+ * @returns {Promise<Object>} A promise that resolves with the dashboard data or an error response object in case of failure.
+ * @throws {ApiException} If the request fails, an ApiException is thrown with error details.
+ *
+ * @example
+ * const filters = { dateRange: 'last30Days', status: 'active' };
+ * fetchDashboardData(filters)
+ *   .then(data => console.log(data))
+ *   .catch(error => console.error(error));
+ */
+export const fetchDashboardData = async (filters: any) => {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+        if (value) params.append(key, String(value));
+    });
 
+    return axios.get(`${API_URL}/dashboard?${params.toString()}`)
+        .then(response => response.data)
+        .catch(error => {
+            throw new ApiException(
+                error?.message || 'Failed to fetch dashboard data',
+                error?.response?.status || 500,
+                error?.response?.data || { success: false, data: null }
+            );
+        });
+};
 
 
 

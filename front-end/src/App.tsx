@@ -16,6 +16,7 @@ import {Link} from 'react-router-dom';
 import ProductsPage from './pages/ProductsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import OrdersPage from './pages/OrdersPage';
+import DashboardPage from "./pages/DashboardPage";
 
 const App = () => {
     const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -51,6 +52,9 @@ const App = () => {
                                 </Button>
                                 <Button color="inherit" component={Link} to="/orders">
                                     Orders
+                                </Button>
+                                <Button color="inherit" component={Link} to="/dashboard">
+                                    Dashboard
                                 </Button>
                             </Box>
                         </Toolbar>
@@ -99,6 +103,7 @@ const App = () => {
                     <main>
                         <Routes>
                             <Route path="/" element={<ProductsPage/>}/>
+                            <Route path="/dashboard" element={<DashboardPage/>}/>
                             <Route path="/categories" element={<CategoriesPage/>}/>
                             <Route path="/orders" element={<OrdersPage/>}/>
                         </Routes>
@@ -127,6 +132,9 @@ const App = () => {
                                 </Button>
                                 <Button color="inherit" component={Link} to="/orders">
                                     Orders
+                                </Button>
+                                <Button color="inherit" component={Link} to="/dashboard">
+                                    Dashboard
                                 </Button>
                             </Box>
                         </Toolbar>
