@@ -9,7 +9,7 @@
   "dependencies": {
     "@aws-sdk/client-sns": "^3.750.0",
     "aws-lambda": "^1.0.7",
-    "mongoose": "^8.10.2",
+    "mongoose": "^8.11.0",
     "serverless": "^4.7.0"
   },
   "devDependencies": {
