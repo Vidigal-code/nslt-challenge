@@ -1,0 +1,67 @@
+
+http://localhost:3000/products
+
+http://localhost:3000/dashboard?category=67be69ce26b0ae6f501eb85f&period=daily
+
+http://localhost:3000/dashboard?period=weekly
+
+http://localhost:3000/dashboard?period=monthly&start=2024-01-01&end=2024-12-31
+
+http://localhost:3000/dashboard?product=67be69ce26b0ae6f501eb865
+
+
+REMOVE ALL DOCKER WINDOWS
+
+for /f "tokens=*" %i in ('docker ps -aq') do docker stop %i
+for /f "tokens=*" %i in ('docker ps -aq') do docker rm %i
+for /f "tokens=*" %i in ('docker images -q') do docker rmi %i
+for /f "tokens=*" %i in ('docker volume ls -q') do docker volume rm %i
+for /f "tokens=*" %i in ('docker network ls -q') do docker network rm %i
+
+docker stop $(docker ps -aq)
+docker rm $(docker ps -aq)
+docker image prune -a -f
+docker builder prune -f
+docker volume prune -f
+docker network prune -f
+
+
+
+START serverless
+C:\GITHUB REPOSITORY\nslt-challenge\order-notification-lambda
+
+serverless offline start --httpPort 4000 or npm run offline
+
+
+
+START LOCALSTACK
+C:\GITHUB REPOSITORY\nslt-challenge\localstack
+docker-compose up
+
+CONFIGURE AWS CLI
+
+aws configure set region us-east-1
+aws configure set aws_access_key_id fake-access-key
+aws configure set aws_secret_access_key fake-secret-key
+
+
+aws --endpoint-url=http://localhost:4566 sns list-topics
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name test-sns-topic
+
+ADD TO DOCKER
+
+docker run -d --name mongo -p 27017:27017 mongo:latest
+docker run -d --name localstack -p 4566:4566 -e DOCKER_HOST=unix:///var/run/docker.sock -e SERVICES=sns,s3,sts -v /var/run/docker.sock:/var/run/docker.sock -v C:/path/to/your/localstack:/var/lib/localstack localstack/localstack:latest
+
+
+C:\GITHUB REPOSITORY\nslt-challenge
+
+Mongodb and localstack are not included!
+
+docker-compose up --build
+
+
+
+START MONGO
+mongod --dbpath=C:\DEV-PROGRAMAS\MongoDB\Server\8.0\data
