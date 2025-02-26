@@ -94,7 +94,7 @@ export const updateProduct = async (productId: string, product: any) => {
 export const deleteProduct = async (productId: string) => {
     return axios.delete(`${API_URL}/products/${productId}`)
         .then(() => {
-            return { success: true };
+            return { success: true, message: 'Delete Product successful' };
         })
         .catch(error => {
             throw new ApiException(
@@ -200,7 +200,7 @@ export const updateCategory = async (categoryId: string, category: any) => {
 export const deleteCategory = async (categoryId: string) => {
     return axios.delete(`${API_URL}/categories/${categoryId}`)
         .then(() => {
-            return { success: true };
+            return { success: true, message: 'Delete Category successful' };
         })
         .catch(error => {
             throw new ApiException(
@@ -304,7 +304,7 @@ export const updateOrder = async (orderId: string, order: any) => {
 export const deleteOrder = async (orderId: string) => {
     return axios.delete(`${API_URL}/orders/${orderId}`)
         .then(() => {
-            return { success: true };
+            return { success: true, message: 'Delete Order successful' };
         })
         .catch(error => {
             throw new ApiException(
