@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "types": ["node"],
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "handler.ts",
+    "order.model.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

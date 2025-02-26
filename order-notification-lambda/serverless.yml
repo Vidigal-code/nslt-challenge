@@ -1,0 +1,47 @@
+service: order-notification-lambda
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ${env:AWS_REGION}
+  environment:
+    SNS_TOPIC_ARN: ${env:SNS_TOPIC_ARN}
+    MONGODB_URI: ${env:MONGO_URI}
+    AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    AWS_REGION: ${env:AWS_REGION}
+
+functions:
+  sendOrderNotification:
+    handler: handler.sendOrderNotification
+    events:
+      - http:
+          path: order
+          method: post
+          cors: true
+
+plugins:
+  - serverless-offline
+  - serverless-localstack
+
+custom:
+  localstack:
+    debug: true
+    stages:
+      - dev
+    endpointFile: ./localstack_endpoints.json
+  serverless-offline:
+    httpPort: 4000
+  esbuild:
+    bundle: true
+    minify: false
+    target: node20
+    external:
+      - aws-sdk
+
+resources:
+  Resources:
+    OrderNotificationTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${env:SNS_TOPIC_NAME}
