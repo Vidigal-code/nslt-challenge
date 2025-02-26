@@ -6,6 +6,7 @@ import { ApiException } from "../services/ApiException";
 import { DashboardResponse, DashboardChartItem } from "../services/Interfaces";
 
 const DashboardPage = () => {
+
     const [data, setData] = useState<DashboardResponse | null>(null);
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({
@@ -18,25 +19,29 @@ const DashboardPage = () => {
 
     const loadData = async () => {
         setLoading(true);
-        try {
-            const response = await fetchDashboardData(filters);
-            if (!response.success) {
-                throw new ApiException('Error loading dashboard data', response.status, response.error);
-            }
-            setData(response.data || {
-                kpis: {
-                    totalOrders: 0,
-                    totalRevenue: 0,
-                    averageOrderValue: 0,
-                    uniqueProducts: 0
-                },
-                chartData: []
+        fetchDashboardData(filters)
+            .then((response) => {
+                if (!response.success) {
+                    throw new ApiException('Error loading dashboard data', response.status, response.error);
+                }
+                setData(response.data || {
+                    kpis: {
+                        totalOrders: 0,
+                        totalRevenue: 0,
+                        averageOrderValue: 0,
+                        uniqueProducts: 0
+                    },
+                    chartData: []
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+            .finally(() => {
+                setLoading(false);
             });
-        } catch (error) {
-            console.error(error);
-        }
-        setLoading(false);
     };
+
 
     const handleFilterChange = (field: string) => (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent
@@ -67,6 +72,7 @@ const DashboardPage = () => {
     const totalOrders = kpis?.totalOrders || 0;
     const totalRevenue = kpis?.totalRevenue || 0;
     const averageValue = kpis?.averageOrderValue || 0;
+
     const uniqueProducts = kpis?.uniqueProducts || 0;
 
     return (
@@ -74,7 +80,6 @@ const DashboardPage = () => {
             <Typography variant="h4" gutterBottom>
                 Sales Dashboard
             </Typography>
-
             <Grid container spacing={2} mb={3}>
                 <Grid item xs={12} sm={6} md={2}>
                     <TextField
