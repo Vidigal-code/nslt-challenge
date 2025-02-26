@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+
+  # Backend Service
+  backend:
+    build:
+      context: ./back-end
+    container_name: backend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - lambda-offline
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./front-end
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+  # Lambda Offline Service (Order Notification Lambda)
+  lambda-offline:
+    build:
+      context: ./order-notification-lambda
+    container_name: lambda-offline
+    ports:
+      - "4000:4000"
+    networks:
+      - app-network
+
+  # It is commented out to run manually, uncomment and configure everything in dokcer if you want
+
+  # MongoDB Service (Commented out)
+  # mongo:
+  #   image: mongo:latest
+  #   container_name: mongo
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - mongo_data:/data/db
+  #   networks:
+  #     - app-network
+
+  # Localstack Service (Commented out)
+  # localstack:
+  #   image: localstack/localstack:latest
+  #   ports:
+  #     - "4566:4566"
+  #   environment:
+  #     - DOCKER_HOST=unix:///var/run/docker.sock
+  #     - SERVICES=sns,s3,sts
+  #   volumes:
+  #     - "/var/run/docker.sock:/var/run/docker.sock"
+  #     - "./tmp/localstack:/var/lib/localstack"
+  #   networks:
+  #     - localstack-network
+
+networks:
+  app-network:
+    driver: bridge
+
+# volumes:
+#   mongo_data:  # Uncomment if you need MongoDB
