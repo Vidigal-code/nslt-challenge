@@ -5,6 +5,8 @@ Develop a full-stack application that integrates **NestJS**, **MongoDB**, **Reac
 
 The scope should be achievable within 4 hours.
 
+link youtube test: https://www.youtube.com/watch?v=LcUjX-c-HEA
+
 ---
 
 ## 1. Backend (NestJS + MongoDB)
