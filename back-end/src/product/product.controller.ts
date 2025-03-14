@@ -46,6 +46,7 @@ export class ProductController {
     }
 
     @Get()
+    //@Throttle({ default: { limit: 5, ttl: 60 } }) - CUSTOM
     findAll() {
         return this.productService.findAll()
             .catch((error) => {
