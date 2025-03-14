@@ -41,7 +41,7 @@ const App = () => {
                     <AppBar position="sticky">
                         <Toolbar>
                             <Typography variant="h6" sx={{flexGrow: 1}}>
-                                Nouslatam Front-End
+                                Challenge Front-end
                             </Typography>
                             <Button
                                 color="inherit"

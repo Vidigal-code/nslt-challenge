@@ -12,7 +12,10 @@
     "incremental": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "src/*": ["src/*"]
+    }
   },
   "include": [
     "src/**/*.ts"

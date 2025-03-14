@@ -3,6 +3,8 @@ import { AppModule } from '../src/app.module';
 import { ProductService } from '../src/product/product.service';
 import { CategoryService } from '../src/category/category.service';
 import { OrderService } from '../src/order/order.service';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 interface Category {
     _id: string;
@@ -19,6 +21,7 @@ interface Product {
 }
 
 async function bootstrap() {
+
     const app = await NestFactory.createApplicationContext(AppModule);
 
     const categoryService = app.get(CategoryService);

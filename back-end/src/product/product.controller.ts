@@ -16,6 +16,7 @@ import {FileInterceptor} from '@nestjs/platform-express';
 import {handleError, handleErrorStatusMessage} from "../exception/exception.handle";
 import {FindOneDto} from "../dto/find.one.dto";
 import {Types} from "mongoose";
+import ImageValidator from "../types/image.validator";
 
 @Controller('products')
 export class ProductController {
@@ -28,13 +29,12 @@ export class ProductController {
         @UploadedFile() file: Express.Multer.File,
         @Body() createProductDto: CreateProductDto
     ) {
-        if (!file.mimetype.startsWith('image/')) {
-            handleErrorStatusMessage(500, 'Only images are allowed');
-            return;
-        }
-        if (file.size > 10 * 1024 * 1024) {
-            handleErrorStatusMessage(500, 'File too large (max 10MB)');
-            return;
+        if (file != null) {
+            const validationResult = ImageValidator.validateImage(file);
+            if (validationResult) {
+                handleErrorStatusMessage(500, validationResult);
+                return;
+            }
         }
         return (file ? this.productService.uploadImage(file).then((imageUrl) => {
             createProductDto.imageUrl = imageUrl;
@@ -75,13 +75,12 @@ export class ProductController {
         if (!Types.ObjectId.isValid(params.id)) {
             throw new HttpException('Invalid ID format', 400);
         }
-        if (!file.mimetype.startsWith('image/')) {
-            handleErrorStatusMessage(500, 'Only images are allowed');
-            return;
-        }
-        if (file.size > 10 * 1024 * 1024) {
-            handleErrorStatusMessage(500, 'File too large (max 10MB)');
-            return;
+        if (file != null) {
+            const validationResult = ImageValidator.validateImage(file);
+            if (validationResult) {
+                handleErrorStatusMessage(500, validationResult);
+                return;
+            }
         }
         return (file ? this.productService.uploadImage(file).then((imageUrl) => {
             updateProductDto.imageUrl = imageUrl;

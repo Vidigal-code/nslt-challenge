@@ -1,7 +1,7 @@
 {
   "name": "front-end-nsl-challenge",
   "version": "1.0.0",
-  "description": "Nouslatam Challenge Front-end",
+  "description": "Challenge Front-end",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
