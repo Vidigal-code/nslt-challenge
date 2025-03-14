@@ -16,9 +16,9 @@ the image URL (displaying it on the front-end).
 import {Injectable} from '@nestjs/common';
 import {S3Client, PutObjectCommand, DeleteObjectCommand, CreateBucketCommand} from '@aws-sdk/client-s3';
 import {AwsException, handleAwsError} from "../exception/aws.exception";
+import {handleErrorStatusMessage} from "../exception/exception.handle";
+import 'src/config';
 
-import * as dotenv from 'dotenv';
-dotenv.config();
 
 @Injectable()
 export class AwsService {
@@ -38,6 +38,15 @@ export class AwsService {
     }
 
     async uploadImage(file: Express.Multer.File): Promise<string | void> {
+        if (!file.mimetype.startsWith('image/')) {
+            handleErrorStatusMessage(500, 'Only images are allowed');
+            return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+            handleErrorStatusMessage(500, 'File too large (max 10MB)');
+            return;
+        }
+
         const params = {
             Bucket: 'my-bucket',
             Key: file.originalname,

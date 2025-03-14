@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable, NotFoundException} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import {Model, Types} from 'mongoose';
 import { Category } from './category.schema';
 import { Product } from '../product/product.schema';
 import { CreateCategoryDto, UpdateCategoryDto } from './category.dto';
@@ -26,14 +26,23 @@ export class CategoryService {
     }
 
     async findOne(id: string): Promise<Category | null> {
+        if (!Types.ObjectId.isValid(id)) {
+            throw new HttpException('Invalid ID format', HttpStatus.BAD_REQUEST);
+        }
         return this.categoryModel.findById(id).exec();
     }
 
     async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category | null> {
+        if (!Types.ObjectId.isValid(id)) {
+            throw new HttpException('Invalid ID format', HttpStatus.BAD_REQUEST);
+        }
         return this.categoryModel.findByIdAndUpdate(id, updateCategoryDto, { new: true }).exec();
     }
 
     async delete(id: string): Promise<void> {
+        if (!Types.ObjectId.isValid(id)) {
+            throw new HttpException('Invalid ID format', HttpStatus.BAD_REQUEST);
+        }
         const category = await this.categoryModel.findById(id).exec();
         if (!category) {
             throw new NotFoundException(`Category with ID ${id} not found`);

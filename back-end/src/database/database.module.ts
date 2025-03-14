@@ -3,9 +3,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {Order, OrderSchema} from "../order/order.schema";
 import {Product, ProductSchema} from "../product/product.schema";
 import {Category, CategorySchema} from "../category/category.schema";
+import 'src/config';
 
-import * as dotenv from 'dotenv';
-dotenv.config();
 
 @Module({
     imports: [

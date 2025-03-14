@@ -1,10 +1,10 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import {HydratedDocument, MergeType, Model } from 'mongoose';
-import { Product } from './product.schema';
-import { CreateProductDto, UpdateProductDto } from './product.dto';
-import { AwsService } from '../aws/aws.service';
-import {GenericException} from "../exception/exception.handle";
+import {HttpException, HttpStatus, Injectable, OnModuleInit} from '@nestjs/common';
+import {InjectModel} from '@nestjs/mongoose';
+import {HydratedDocument, MergeType, Model, Types} from 'mongoose';
+import {Product} from './product.schema';
+import {CreateProductDto, UpdateProductDto} from './product.dto';
+import {AwsService} from '../aws/aws.service';
+import {GenericException, handleErrorStatusMessage} from "../exception/exception.handle";
 
 @Injectable()
 export class ProductService implements OnModuleInit {
@@ -23,6 +23,14 @@ export class ProductService implements OnModuleInit {
     }
 
     async uploadImage(file: Express.Multer.File): Promise<string | void> {
+        if (!file.mimetype.startsWith('image/')) {
+            handleErrorStatusMessage(500, 'Only images are allowed');
+            return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+            handleErrorStatusMessage(500, 'File too large (max 10MB)');
+            return;
+        }
         return await this.awsService.uploadImage(file);
     }
 
@@ -36,14 +44,23 @@ export class ProductService implements OnModuleInit {
     }
 
     async findOne(id: string): Promise<Product | null> {
+        if (!Types.ObjectId.isValid(id)) {
+            throw new HttpException('Invalid ID format', HttpStatus.BAD_REQUEST);
+        }
         return this.productModel.findById(id).exec();
     }
 
     async update(id: string, updateProductDto: UpdateProductDto): Promise<Product | null> {
-        return await this.productModel.findByIdAndUpdate(id, updateProductDto, { new: true }).exec();
+        if (!Types.ObjectId.isValid(id)) {
+            throw new HttpException('Invalid ID format', HttpStatus.BAD_REQUEST);
+        }
+        return await this.productModel.findByIdAndUpdate(id, updateProductDto, {new: true}).exec();
     }
 
     async delete(id: string): Promise<boolean> {
+        if (!Types.ObjectId.isValid(id)) {
+            throw new HttpException('Invalid ID format', HttpStatus.BAD_REQUEST);
+        }
         const product = await this.productModel.findById(id).exec();
         if (product?.imageUrl) {
             await this.awsService.deleteImage(product.imageUrl);

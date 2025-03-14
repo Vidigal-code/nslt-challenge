@@ -4,7 +4,8 @@ import { Model, PipelineStage } from 'mongoose';
 import { Order } from '../order/order.schema';
 import { Product } from '../product/product.schema';
 import { Category } from '../category/category.schema';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
+
 
 @Injectable()
 export class DashboardService {
@@ -39,13 +40,16 @@ export class DashboardService {
         const matchStage: Record<string, any> = {};
 
         if (filters.productId) {
-            if (!ObjectId.isValid(filters.productId)) {
+            if (!Types.ObjectId.isValid(filters.productId)) {
                 throw new Error('Invalid productId: Must be 24-character hex');
             }
             matchStage.productIds = filters.productId;
         }
 
         if (filters.categoryId) {
+            if (!Types.ObjectId.isValid(filters.categoryId)) {
+                throw new Error('Invalid productId: Must be 24-character hex');
+            }
             const products = await this.productModel.find({
                 categoryIds: filters.categoryId
             }).select('_id').lean();

@@ -3,10 +3,8 @@ import {AppModule} from './app.module';
 import helmet from 'helmet';
 import * as https from 'https';
 import * as fs from 'fs';
+import 'src/config';
 
-import * as dotenv from 'dotenv';
-
-dotenv.config();
 
 const isHttps = process.env.HTTPS === 'true';
 const PORT = process.env.PORT || 3000;
