@@ -16,7 +16,7 @@ the image URL (displaying it on the front-end).
 import {Injectable} from '@nestjs/common';
 import {S3Client, PutObjectCommand, DeleteObjectCommand, CreateBucketCommand} from '@aws-sdk/client-s3';
 import {AwsException, handleAwsError} from "../exception/aws.exception";
-import {handleErrorStatusMessage} from "../exception/exception.handle";
+import {handleErrorMessageCustom} from "../exception/exception.handle";
 import ImageValidator from "../types/image.validator";
 import 'src/config';
 
@@ -43,8 +43,7 @@ export class AwsService {
         if (file != null) {
             const validationResult = ImageValidator.validateImage(file);
             if (validationResult) {
-                handleErrorStatusMessage(500, validationResult);
-                return;
+                return handleErrorMessageCustom(500, validationResult);
             }
         }
 

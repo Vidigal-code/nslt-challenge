@@ -13,7 +13,7 @@ import {
 import {ProductService} from './product.service';
 import {CreateProductDto, UpdateProductDto} from './product.dto';
 import {FileInterceptor} from '@nestjs/platform-express';
-import {handleError, handleErrorStatusMessage} from "../exception/exception.handle";
+import {handleError, handleErrorMessageCustom} from "../exception/exception.handle";
 import {FindOneDto} from "../dto/find.one.dto";
 import {Types} from "mongoose";
 import ImageValidator from "../types/image.validator";
@@ -32,8 +32,7 @@ export class ProductController {
         if (file != null) {
             const validationResult = ImageValidator.validateImage(file);
             if (validationResult) {
-                handleErrorStatusMessage(500, validationResult);
-                return;
+                return handleErrorMessageCustom(500, validationResult);
             }
         }
         return (file ? this.productService.uploadImage(file).then((imageUrl) => {
@@ -78,8 +77,7 @@ export class ProductController {
         if (file != null) {
             const validationResult = ImageValidator.validateImage(file);
             if (validationResult) {
-                handleErrorStatusMessage(500, validationResult);
-                return;
+                return handleErrorMessageCustom(500, validationResult);
             }
         }
         return (file ? this.productService.uploadImage(file).then((imageUrl) => {

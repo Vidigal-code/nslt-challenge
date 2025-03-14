@@ -71,6 +71,7 @@ export const updateProduct = async (productId: string, product: any) => {
     return axios.put(`${API_URL}/products/${productId}`, product)
         .then(response => response.data)
         .catch(error => {
+            console.log(error.message);
             throw new ApiException(
                 error?.message || 'Failed to update product',
                 error?.response?.status || 500,
