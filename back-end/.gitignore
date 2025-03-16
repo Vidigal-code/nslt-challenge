@@ -24,3 +24,6 @@ lerna-debug.log*
 *.sw?
 
 package-lock.json
+
+.env
+
