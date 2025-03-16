@@ -26,6 +26,29 @@ If you're looking to add a script for running Jest tests in your `package.json` 
 }
 ```
 
+---
+# Front-end .env
+
+Sure! Here's an explanation for creating a `.env` file in markdown format:
+
+---
+
+# How to Create a `.env` File
+
+A `.env` file is used to store environment variables that are important for configuring your application. These variables are typically used to store sensitive information, such as API keys, database connection strings, and other configuration settings that differ between development, staging, and production environments.
+
+### Front-end `.env` File
+
+For a front-end application, such as a React app, you may need to set environment variables that configure API endpoints and other settings.
+
+**Example of a Front-end `.env` file:**
+
+```bash
+VITE_API_URL=http://localhost:3000
+```
+
+- **VITE_API_URL:** This specifies the API endpoint the front-end application will communicate with. It could point to your back-end server, usually set to a local development server (e.g., `http://localhost:3000`) during development.
+
 ### Documenting the Scripts:
 
 Here is a detailed breakdown of all the commands in your `scripts` section, including the `test` script for Jest.
