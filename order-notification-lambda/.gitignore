@@ -25,7 +25,9 @@ dist-ssr
 
 *.sw?
 
-*.undefined
+undefined
+
+.env
 
 
 
