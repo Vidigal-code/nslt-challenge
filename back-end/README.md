@@ -11,6 +11,56 @@ docker run -d --name localstack -p 4566:4566 -e DOCKER_HOST=unix:///var/run/dock
 
 ---
 
+### Back-end `.env` File
+
+For a back-end application, such as an Express server, environment variables help configure important services, ports, and other server-related settings.
+
+**Example of a Back-end `.env` file:**
+
+```bash
+PORT=3000
+HTTPS=false
+API_FRONTEND=http://localhost:5173
+AWS_REGION=us-east-1
+S3_ENDPOINT=http://localhost:4566
+AWS_ACCESS_KEY_ID=test
+AWS_SECRET_ACCESS_KEY=test
+MONGO_URI=mongodb://127.0.0.1:27017/nouslatam
+```
+
+- **PORT:** Defines the port on which the back-end server will listen. In this example, it’s set to port `3000`.
+- **HTTPS:** This indicates whether the server should use HTTPS. In this case, it’s set to `false` (non-HTTPS).
+- **API_FRONTEND:** Specifies the front-end URL. In this case, it's the URL of the front-end app running locally (e.g., `http://localhost:5173`).
+- **AWS_REGION:** Defines the AWS region for the application. In this example, it’s set to `us-east-1`.
+- **S3_ENDPOINT:** Configures the endpoint for AWS S3 storage. This might be configured for a local S3 mock server (e.g., `http://localhost:4566` for LocalStack).
+- **AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:** These are the AWS credentials required for accessing services like S3. In a local development environment, they are often set to dummy values.
+- **MONGO_URI:** Defines the connection string for MongoDB. In this example, it connects to a local MongoDB instance (e.g., `mongodb://127.0.0.1:27017/nouslatam`).
+
+### Steps to Create a `.env` File
+
+1. **Create the file:**
+   - In the root directory of your project, create a new file named `.env` (without any file extension).
+
+2. **Add your variables:**
+   - Open the `.env` file in a text editor and add your environment variables in the `KEY=VALUE` format. Ensure each key-value pair is on its own line.
+
+3. **Use the variables in your code:**
+   - In the application code, you can access the environment variables using `process.env.KEY_NAME`. For example, in Node.js:
+
+   ```javascript
+   const apiUrl = process.env.VITE_API_URL;
+   ```
+
+4. **Never commit the `.env` file to source control (Git):**
+   - The `.env` file often contains sensitive information. Make sure to add it to your `.gitignore` file to prevent it from being committed to version control.
+
+   ```bash
+   # .gitignore
+   .env
+   ```
+
+---
+
 Sure! Here's the explanation for each script in your `package.json` file in Markdown format.
 
 ```markdown
