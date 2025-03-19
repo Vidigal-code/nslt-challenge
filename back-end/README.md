@@ -17,7 +17,9 @@ For a back-end application, such as an Express server, environment variables hel
 
 **Example of a Back-end `.env` file:**
 
+
 ```bash
+HOST=localhost
 PORT=3000
 HTTPS=false
 API_FRONTEND=http://localhost:5173
@@ -27,7 +29,9 @@ AWS_ACCESS_KEY_ID=test
 AWS_SECRET_ACCESS_KEY=test
 MONGO_URI=mongodb://127.0.0.1:27017/nouslatam
 ```
+### Environment Variables
 
+- **HOST:** Defines the hostname or IP address on which the back-end server will listen. In this example, it’s set to `localhost`, which means the server will only be accessible from the same machine it’s running on.
 - **PORT:** Defines the port on which the back-end server will listen. In this example, it’s set to port `3000`.
 - **HTTPS:** This indicates whether the server should use HTTPS. In this case, it’s set to `false` (non-HTTPS).
 - **API_FRONTEND:** Specifies the front-end URL. In this case, it's the URL of the front-end app running locally (e.g., `http://localhost:5173`).

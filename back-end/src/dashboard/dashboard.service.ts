@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, PipelineStage } from 'mongoose';
+import { Model, PipelineStage, Types } from 'mongoose';
 import { Order } from '../order/order.schema';
 import { Product } from '../product/product.schema';
 import { Category } from '../category/category.schema';
-import { Types } from 'mongoose';
 
 
 @Injectable()

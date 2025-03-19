@@ -1,6 +1,6 @@
-import {HttpException, HttpStatus, Injectable, NotFoundException} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {Model, Types} from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Category } from './category.schema';
 import { Product } from '../product/product.schema';
 import { CreateCategoryDto, UpdateCategoryDto } from './category.dto';

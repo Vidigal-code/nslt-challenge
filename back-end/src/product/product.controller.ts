@@ -10,12 +10,12 @@ import {
     UseInterceptors,
     HttpException
 } from '@nestjs/common';
-import {ProductService} from './product.service';
-import {CreateProductDto, UpdateProductDto} from './product.dto';
-import {FileInterceptor} from '@nestjs/platform-express';
-import {handleError, handleErrorMessageCustom} from "../exception/exception.handle";
-import {FindOneDto} from "../dto/find.one.dto";
-import {Types} from "mongoose";
+import { ProductService } from './product.service';
+import { CreateProductDto, UpdateProductDto } from './product.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { handleError, handleErrorMessageCustom } from "../exception/exception.handle";
+import { FindOneDto } from "../dto/find.one.dto";
+import { Types } from "mongoose";
 import ImageValidator from "../types/image.validator";
 
 @Controller('products')

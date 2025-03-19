@@ -1,9 +1,10 @@
-import {Controller, Get, Post, Body, Param, Put, Delete, HttpException} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpException} from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto } from './category.dto';
-import {handleError} from "../exception/exception.handle";
-import {Types} from "mongoose";
-import {FindOneDto} from "../dto/find.one.dto";
+import { Types } from "mongoose";
+import { FindOneDto } from "../dto/find.one.dto";
+import { handleError } from "../exception/exception.handle";
+
 
 @Controller('categories')
 export class CategoryController {

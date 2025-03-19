@@ -1,10 +1,10 @@
-import {HttpException, HttpStatus, Injectable, OnModuleInit} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {HydratedDocument, MergeType, Model, Types} from 'mongoose';
-import {Product} from './product.schema';
-import {CreateProductDto, UpdateProductDto} from './product.dto';
-import {AwsService} from '../aws/aws.service';
-import {GenericException, handleErrorMessageCustom} from "../exception/exception.handle";
+import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { HydratedDocument, MergeType, Model, Types } from 'mongoose';
+import { Product } from './product.schema';
+import { CreateProductDto, UpdateProductDto } from './product.dto';
+import { AwsService } from '../aws/aws.service';
+import { GenericException, handleErrorMessageCustom } from "../exception/exception.handle";
 import ImageValidator from "../types/image.validator";
 
 @Injectable()

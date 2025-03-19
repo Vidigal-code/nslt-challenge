@@ -13,10 +13,10 @@ the image URL (displaying it on the front-end).
 */
 
 
-import {Injectable} from '@nestjs/common';
-import {S3Client, PutObjectCommand, DeleteObjectCommand, CreateBucketCommand} from '@aws-sdk/client-s3';
-import {AwsException, handleAwsError} from "../exception/aws.exception";
-import {handleErrorMessageCustom} from "../exception/exception.handle";
+import { Injectable } from '@nestjs/common';
+import { S3Client, PutObjectCommand, DeleteObjectCommand, CreateBucketCommand} from '@aws-sdk/client-s3';
+import { AwsException, handleAwsError } from "../exception/aws.exception";
+import { handleErrorMessageCustom } from "../exception/exception.handle";
 import ImageValidator from "../types/image.validator";
 import 'src/config';
 

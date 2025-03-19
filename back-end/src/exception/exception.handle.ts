@@ -1,4 +1,4 @@
-import {HttpException} from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
 export class GenericException extends HttpException {
     constructor(message: string, statusCode: number) {

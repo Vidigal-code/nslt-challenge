@@ -6,7 +6,8 @@ import * as fs from 'fs';
 import 'src/config';
 import { ThrottlerFilter } from './filters/throttler.filter';
 
-const isHttps = process.env.HTTPS === 'true';
+const isHttps = process.env.HTTPS === 'false';
+const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || 3000;
 const API_FRONTEND = process.env.API_FRONTEND || 'http://localhost:5173';
 
@@ -51,11 +52,11 @@ async function bootstrap() {
             cert: fs.readFileSync('path/to/your/certificate.pem'),
         };
         https.createServer(httpsOptions, app.getHttpAdapter().getInstance()).listen(PORT, () => {
-            console.log(`\n\u001b[34mHTTPS server running on https://localhost:${PORT} -> by https://github.com/Vidigal-code\u001b[39m`);
+            console.log(`\n\u001b[34mHTTPS server running on https://${HOST}:${PORT}  -> by https://github.com/Vidigal-code\u001b[39m`);
         });
     } else {
         await app.listen(PORT, () => {
-            console.log(`\n\u001b[34mHTTP server running on http://localhost:${PORT} -> by https://github.com/Vidigal-code\u001b[39m`);
+            console.log(`\n\u001b[34mHTTP server running on http://${HOST}:${PORT} -> by https://github.com/Vidigal-code\u001b[39m`);
         });
     }
 }
