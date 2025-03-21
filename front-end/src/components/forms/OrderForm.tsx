@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Grid, Box, InputLabel, TextField } from '@mui/material';
 import { createOrder, updateOrder } from '../../services/Api';
-import { OrderFormProps } from "../../services/Interfaces";
+import { OrderFormProps } from "../../types/Interfaces";
 
 const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, initialData, allProducts }) => {
 

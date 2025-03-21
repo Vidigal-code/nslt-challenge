@@ -1,6 +1,6 @@
-import {Category} from "../types/Category";
-import {Order} from "../types/Order";
-import {Product} from "../types/Product";
+import {Category} from "./Category";
+import {Order} from "./Order";
+import {Product} from "./Product";
 
 export interface DashboardKPI {
     totalOrders: number;

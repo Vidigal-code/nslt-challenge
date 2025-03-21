@@ -13,7 +13,7 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 import CategoryForm from '../components/forms/CategoryForm';
-import { CategoryFormProps } from '../services/Interfaces';
+import { CategoryFormProps } from '../types/Interfaces';
 
 const initialData = {
     _id: '1',

@@ -3,7 +3,7 @@ import { Box, Grid, Card, CardContent, Typography, TextField, MenuItem, Circular
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { fetchDashboardData } from '../services/Api';
 import { ApiException } from "../services/ApiException";
-import { DashboardResponse, DashboardChartItem } from "../services/Interfaces";
+import { DashboardResponse, DashboardChartItem } from "../types/Interfaces";
 
 const DashboardPage = () => {
 
