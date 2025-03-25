@@ -1,9 +1,7 @@
 import axios from 'axios';
-import {ApiException} from "./ApiException";
-
+import {ApiException} from "./exeption/ApiException";
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-
 
 /**
  * Fetches the list of all products from the API.
@@ -106,11 +104,6 @@ export const deleteProduct = async (productId: string) => {
         });
 };
 
-
-
-
-
-
 /**
  * Fetches the list of all categories from the API.
  *
@@ -133,7 +126,6 @@ export const fetchCategories = async () => {
             );
         });
 };
-
 
 /**
  * Creates a new category in the system by sending a POST request to the /categories endpoint.
@@ -211,10 +203,6 @@ export const deleteCategory = async (categoryId: string) => {
             );
         });
 };
-
-
-
-
 
 /**
  * Fetches the list of all orders from the API.
@@ -316,9 +304,6 @@ export const deleteOrder = async (orderId: string) => {
         });
 };
 
-
-
-
 /**
  * Fetches dashboard data based on the provided filters from the API.
  *
@@ -348,9 +333,3 @@ export const fetchDashboardData = async (filters: any) => {
             );
         });
 };
-
-
-
-
-
-

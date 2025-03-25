@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Grid, Box, InputLabel, TextField } from '@mui/material';
-import { createCategory, updateCategory } from '../../services/Api';
-import {CategoryFormProps} from "../../types/Interfaces";
+import { createCategory, updateCategory } from '../../api/Api';
+import {CategoryFormProps} from "../../types/interface/Interfaces";
 
 const CategoryForm: React.FC<CategoryFormProps> = ({ onSubmit, initialData }) => {
 

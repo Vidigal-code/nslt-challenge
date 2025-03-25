@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Grid, Box, InputLabel, TextField } from '@mui/material';
-import { createOrder, updateOrder } from '../../services/Api';
-import { OrderFormProps } from "../../types/Interfaces";
+import { createOrder, updateOrder } from '../../api/Api';
+import { OrderFormProps } from "../../types/interface/Interfaces";
 
-const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, initialData, allProducts }) => {
+const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, initialData }) => {
 
     const [productIds, setProductIds] = useState<string[]>([]);
-    const [total, setTotal] = useState<number>(0);
+    const [total, setTotal] = useState<number>(1);
     const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -55,6 +55,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, initialData, allProduct
                             onChange={(e) => setTotal(Number(e.target.value))}
                             fullWidth
                             required
+                            inputProps={{ min: 1}}
                         />
                     </Grid>
                     <Grid item xs={12}>

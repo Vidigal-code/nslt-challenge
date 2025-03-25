@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {fetchOrders, deleteOrder, fetchProducts} from '../services/Api';
+import {fetchOrders, deleteOrder, fetchProducts} from '../api/Api';
 import OrderTable from '../components/tables/OrderTable';
 import OrderForm from '../components/forms/OrderForm';
 import { Button, CircularProgress, Grid, Box } from '@mui/material';

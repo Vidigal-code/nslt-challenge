@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import 'src/config';
 import { ThrottlerFilter } from './filters/throttler.filter';
 
-const isHttps = process.env.HTTPS === 'false';
+const isHttps = process.env.HTTPS === 'true';
 const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || 3000;
 const API_FRONTEND = process.env.API_FRONTEND || 'http://localhost:5173';

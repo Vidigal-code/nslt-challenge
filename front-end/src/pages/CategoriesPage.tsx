@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchCategories, deleteCategory } from '../services/Api';
+import { fetchCategories, deleteCategory } from '../api/Api';
 import CategoryTable from '../components/tables/CategoryTable';
 import CategoryForm from '../components/forms/CategoryForm';
 import { Button, CircularProgress, Grid, Box } from '@mui/material';

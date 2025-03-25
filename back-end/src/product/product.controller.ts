@@ -10,18 +10,19 @@ import {
     UseInterceptors,
     HttpException
 } from '@nestjs/common';
-import { ProductService } from './product.service';
-import { CreateProductDto, UpdateProductDto } from './product.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { handleError, handleErrorMessageCustom } from "../exception/exception.handle";
-import { FindOneDto } from "../dto/find.one.dto";
-import { Types } from "mongoose";
+import {ProductService} from './product.service';
+import {CreateProductDto, UpdateProductDto} from './product.dto';
+import {FileInterceptor} from '@nestjs/platform-express';
+import {handleError, handleErrorMessageCustom} from "../exception/exception.handle";
+import {FindOneDto} from "../dto/find.one.dto";
+import {Types} from "mongoose";
 import ImageValidator from "../types/image.validator";
 
 @Controller('products')
 export class ProductController {
 
-    constructor(private readonly productService: ProductService) {}
+    constructor(private readonly productService: ProductService) {
+    }
 
     @Post()
     @UseInterceptors(FileInterceptor('image'))
@@ -29,6 +30,13 @@ export class ProductController {
         @UploadedFile() file: Express.Multer.File,
         @Body() createProductDto: CreateProductDto
     ) {
+
+        const price: number = createProductDto.price;
+
+        if (price <= 0) {
+            return handleErrorMessageCustom(403, `Value not allowed: ${price}`);
+        }
+
         if (file != null) {
             const validationResult = ImageValidator.validateImage(file);
             if (validationResult) {
@@ -74,6 +82,13 @@ export class ProductController {
         if (!Types.ObjectId.isValid(params.id)) {
             throw new HttpException('Invalid ID format', 400);
         }
+
+        const price: number = updateProductDto.price;
+
+        if (price <= 0) {
+            return handleErrorMessageCustom(403, `Value not allowed: ${price}`);
+        }
+
         if (file != null) {
             const validationResult = ImageValidator.validateImage(file);
             if (validationResult) {

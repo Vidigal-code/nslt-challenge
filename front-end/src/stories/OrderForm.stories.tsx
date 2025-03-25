@@ -13,7 +13,7 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 import OrderForm from '../components/forms/OrderForm';
-import { OrderFormProps } from '../types/Interfaces';
+import { OrderFormProps } from '../types/interface/Interfaces';
 
 const allProducts = [
     { _id: '1', name: 'Product 1' },

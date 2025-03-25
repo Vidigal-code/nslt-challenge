@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, Card, CardContent, Typography, TextField, MenuItem, CircularProgress, Select, SelectChangeEvent, Button } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { fetchDashboardData } from '../services/Api';
-import { ApiException } from "../services/ApiException";
-import { DashboardResponse, DashboardChartItem } from "../types/Interfaces";
+import { fetchDashboardData } from '../api/Api';
+import { ApiException } from "../api/exeption/ApiException";
+import { DashboardResponse, DashboardChartItem } from "../types/interface/Interfaces";
 
 const DashboardPage = () => {
 

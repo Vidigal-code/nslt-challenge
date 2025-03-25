@@ -3,7 +3,7 @@ import { OrderService } from './order.service';
 import { CreateOrderDto, UpdateOrderDto } from './order.dto';
 import { Types } from 'mongoose';
 import { FindOneDto } from "../dto/find.one.dto";
-import { handleError } from '../exception/exception.handle';
+import {handleError, handleErrorMessageCustom} from '../exception/exception.handle';
 
 
 @Controller('orders')
@@ -12,6 +12,11 @@ export class OrderController {
 
     @Post()
     create(@Body() createOrderDto: CreateOrderDto) {
+        const total: number = createOrderDto.total;
+
+        if (total <= 0) {
+            return handleErrorMessageCustom(403, `Value not allowed: ${total}`);
+        }
         return this.orderService.create(createOrderDto).catch(error => handleError(error));
     }
 
@@ -32,6 +37,11 @@ export class OrderController {
     update(@Param() params: FindOneDto, @Body() updateOrderDto: UpdateOrderDto) {
         if (!Types.ObjectId.isValid(params.id)) {
             throw new HttpException('Invalid ID format', 400);
+        }
+        const total: number = updateOrderDto.total;
+
+        if (total <= 0) {
+            return handleErrorMessageCustom(403, `Value not allowed: ${total}`);
         }
         return this.orderService.update(params.id, updateOrderDto).catch(error => handleError(error, params.id));
     }
