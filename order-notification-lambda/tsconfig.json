@@ -11,7 +11,7 @@
   },
   "include": [
     "src/handler.ts",
-    "src/order.model.ts"
+    "src/models/order.ts"
   ],
   "exclude": [
     "node_modules"
