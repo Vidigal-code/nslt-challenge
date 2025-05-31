@@ -3,8 +3,7 @@ import { AppModule } from '../src/app.module';
 import { ProductService } from '../src/product/product.service';
 import { CategoryService } from '../src/category/category.service';
 import { OrderService } from '../src/order/order.service';
-import * as dotenv from 'dotenv';
-dotenv.config();
+import 'src/config';
 
 interface Category {
     _id: string;
@@ -134,7 +133,7 @@ async function bootstrap() {
         },
     ]);
 
-    console.log('\x1b[32mDatabase populated successfully!\x1b[0m');
+    console.log('\x1b\n[32mDatabase populated successfully!\x1b[0m');
     await app.close();
 }
 
