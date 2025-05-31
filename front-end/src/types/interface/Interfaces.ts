@@ -5,6 +5,8 @@ import {Product} from "../Product";
 export interface DashboardKPI {
     totalOrders: number;
     totalRevenue: number;
+    totalPeriods: number;
+    bestPeriod: any;
     averageOrderValue: number;
     uniqueProducts: number;
 }
@@ -18,6 +20,8 @@ export interface DashboardChartItem {
     };
     totalOrders: number;
     totalRevenue: number;
+    totalPeriods: number;
+    bestPeriod: any;
 }
 
 export interface DashboardResponse {

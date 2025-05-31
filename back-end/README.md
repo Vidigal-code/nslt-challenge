@@ -28,6 +28,7 @@ S3_ENDPOINT=http://localhost:4566
 AWS_ACCESS_KEY_ID=test
 AWS_SECRET_ACCESS_KEY=test
 MONGO_URI=mongodb://127.0.0.1:27017/nouslatam
+API_LAMBDA=http://localhost:4000/dev/order
 ```
 ### Environment Variables
 

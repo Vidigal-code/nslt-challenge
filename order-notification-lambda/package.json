@@ -1,7 +1,7 @@
 {
   "name": "order-notification-lambda",
   "version": "1.0.0",
-  "description": "Nouslatam Challenge Serverless",
+  "description": "NSLT Challenge Serverless",
   "main": "src/handler.ts",
   "scripts": {
     "offline": "serverless offline start --httpPort 4000"

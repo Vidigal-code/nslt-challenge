@@ -3,15 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, PipelineStage, Types } from 'mongoose';
 import { Order } from '../order/order.schema';
 import { Product } from '../product/product.schema';
-import { Category } from '../category/category.schema';
-
 
 @Injectable()
 export class DashboardService {
     constructor(
         @InjectModel(Order.name) private orderModel: Model<Order>,
         @InjectModel(Product.name) private productModel: Model<Product>,
-        @InjectModel(Category.name) private categoryModel: Model<Category>,
     ) {}
 
     async getAggregatedData(filters: {
@@ -29,7 +26,8 @@ export class DashboardService {
             chartData: chartData.map(item => ({
                 period: item.period,
                 totalOrders: item.totalOrders,
-                totalRevenue: item.totalRevenue
+                totalRevenue: item.totalRevenue,
+                averageOrderValue: item.averageOrderValue
             }))
         };
     }
@@ -47,7 +45,7 @@ export class DashboardService {
 
         if (filters.categoryId) {
             if (!Types.ObjectId.isValid(filters.categoryId)) {
-                throw new Error('Invalid productId: Must be 24-character hex');
+                throw new Error('Invalid categoryId: Must be 24-character hex');
             }
             const products = await this.productModel.find({
                 categoryIds: filters.categoryId
@@ -108,7 +106,8 @@ export class DashboardService {
                     totalOrders: { $sum: 1 },
                     totalRevenue: { $sum: '$total' },
                     averageOrderValue: { $avg: '$total' },
-                    products: { $addToSet: '$product.name' }
+                    products: { $addToSet: '$product.name' },
+                    uniqueProductIds: { $addToSet: '$product._id' }
                 }
             },
             {
@@ -116,9 +115,10 @@ export class DashboardService {
                     _id: 0,
                     period: '$_id',
                     totalOrders: 1,
-                    totalRevenue: 1,
+                    totalRevenue: { $round: ['$totalRevenue', 2] },
                     averageOrderValue: { $round: ['$averageOrderValue', 2] },
-                    products: 1
+                    products: 1,
+                    uniqueProductIds: 1
                 }
             },
             { $sort: { 'period.date': 1 } }
@@ -131,33 +131,43 @@ export class DashboardService {
         const result = data.reduce((acc, item) => ({
             totalOrders: acc.totalOrders + item.totalOrders,
             totalRevenue: acc.totalRevenue + item.totalRevenue,
-            uniqueProducts: new Set([...acc.uniqueProducts, ...item.products])
+            uniqueProducts: new Set([...acc.uniqueProducts, ...item.products]),
+            uniqueProductIds: new Set([...acc.uniqueProductIds, ...item.uniqueProductIds])
         }), {
             totalOrders: 0,
             totalRevenue: 0,
-            uniqueProducts: new Set<string>()
+            uniqueProducts: new Set<string>(),
+            uniqueProductIds: new Set<string>()
         });
 
         return {
             totalOrders: result.totalOrders,
-            totalRevenue: result.totalRevenue,
+            totalRevenue: Number(result.totalRevenue.toFixed(2)),
             averageOrderValue: result.totalOrders > 0
                 ? Number((result.totalRevenue / result.totalOrders).toFixed(2))
                 : 0,
-            uniqueProducts: result.uniqueProducts.size
+            uniqueProducts: result.uniqueProducts.size,
+            totalPeriods: data.length,
+            bestPeriod: data.length > 0
+                ? data.reduce((max, curr) => curr.totalRevenue > max.totalRevenue ? curr : max)
+                : null
         };
     }
 
     private getDateGroup(period: string) {
         const config = {
-            daily: { date: { $dateToString: { format: '%Y-%m-%d', date: '$date' } } },
+            daily: {
+                date: { $dateToString: { format: '%Y-%m-%d', date: '$date' } }
+            },
             weekly: {
                 year: { $isoWeekYear: '$date' },
-                week: { $isoWeek: '$date' }
+                week: { $isoWeek: '$date' },
+                date: { $dateToString: { format: '%Y-%m-%d', date: '$date' } }
             },
             monthly: {
                 year: { $year: '$date' },
-                month: { $month: '$date' }
+                month: { $month: '$date' },
+                date: { $dateToString: { format: '%Y-%m-%d', date: '$date' } }
             }
         };
         return config[period as keyof typeof config] || config.daily;
