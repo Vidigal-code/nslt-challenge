@@ -3,8 +3,9 @@ import {InjectModel} from '@nestjs/mongoose';
 import {Model, Types} from 'mongoose';
 import {Order} from './order.schema';
 import {CreateOrderDto, UpdateOrderDto} from './order.dto';
-import {handleError} from "src/exception/exception.handle";
 import 'src/config';
+
+
 
 @Injectable()
 export class OrderService {
@@ -12,31 +13,85 @@ export class OrderService {
     }
 
     async create(createOrderDto: CreateOrderDto): Promise<Order> {
+        // STEP 1: Create and save the order in NestJS database FIRST
+        const createdOrder = new this.orderModel(createOrderDto);
+        const savedOrder = await createdOrder.save();
+
+        // STEP 2: Send notification via Lambda (async, non-blocking)
+        this.sendNotificationToLambda(savedOrder);
+
+        return savedOrder;
+    }
+
+    /**
+     * Send notification to Lambda function asynchronously
+     * This method doesn't block the main order creation flow
+     */
+    private async sendNotificationToLambda(order: any): Promise<void> {
+        const lambdaEndpoint = process.env.API_LAMBDA;
+
+        if (!lambdaEndpoint) {
+            console.warn('\n⚠️ [ORDER SERVICE] Lambda endpoint not configured - Skipping notification');
+            return;
+        }
 
         try {
-            const response = await fetch(`${process.env.API_LAMBDA}`, {
+            // Send order ID and essential data to Lambda for notification
+            const notificationPayload = {
+                orderId: order._id.toString(),
+                total: order.total,
+                productIds: order.productIds,
+                date: order.date
+            };
+
+            const response = await fetch(lambdaEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(createOrderDto),
+                body: JSON.stringify(notificationPayload),
+                signal: AbortSignal.timeout(5000) // 5 second timeout
             });
 
-            if (!response.ok) {
-                console.error(`Error sending notification: ${response.statusText}`);
-            }
-        } catch (e) {
-            console.error('Failed to send order to Lambda:', e);
-            handleError(e);
-        }
+            if (response.ok) {
+                console.log('\n✅ [ORDER SERVICE] Lambda notification sent successfully');
+            } else {
+                const errorText = await response.text();
+                console.error(`\n❌ [ORDER SERVICE] Lambda responded with error: ${response.status} - ${errorText}`);
 
-        const createdOrder = new this.orderModel(createOrderDto);
-        return createdOrder.save();
+                // Fallback: Create manual notification log
+                this.logManualNotification(order);
+            }
+
+        } catch (error: any) {
+            console.error('\n❌ [ORDER SERVICE] Failed to connect to Lambda:', error.message);
+
+            // Fallback: Create manual notification log
+            this.logManualNotification(order);
+        }
     }
 
+    /**
+     * Fallback notification when Lambda is unavailable
+     */
+    private logManualNotification(order: any): void {
+        console.log('\n📧 [MANUAL NOTIFICATION] New order created:', {
+            orderId: order._id.toString(),
+            total: order.total,
+            productCount: order.productIds.length,
+            date: order.date,
+            timestamp: new Date().toISOString(),
+            status: 'FALLBACK_NOTIFICATION'
+        });
+    }
 
     async createMany(createOrderDtos: CreateOrderDto[]): Promise<Order[]> {
-        return this.orderModel.insertMany(createOrderDtos);
+        const orders = await this.orderModel.insertMany(createOrderDtos);
+
+        // Send notifications for each order asynchronously
+        orders.forEach(order => this.sendNotificationToLambda(order));
+
+        return orders;
     }
 
     async findAll(): Promise<Order[]> {

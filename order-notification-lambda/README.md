@@ -54,10 +54,11 @@ The `.env` file stores sensitive and configurable values such as database connec
 ## `.env` File Contents
 
 ```bash
+NODE_ENV=development
 MONGO_URI=mongodb://127.0.0.1:27017/nouslatam
 SNS_TOPIC_ARN=arn:aws:sns:us-east-1:000000000000:test-sns-topic
 SNS_TOPIC_NAME=test-sns-topic
-AWS_ACCESS_KEY_ID=fake-access-key
-AWS_SECRET_ACCESS_KEY=fake-secret-key
+AWS_ACCESS_KEY_ID=test
+AWS_SECRET_ACCESS_KEY=test
 AWS_REGION=us-east-1
 ```
