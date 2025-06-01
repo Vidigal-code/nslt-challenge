@@ -32,7 +32,7 @@ const ProductTable = ({ products, onEdit, onDelete }: any) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {paginatedProducts.map((product) => (
+                        {paginatedProducts.map((product: any) => (
                             <TableRow key={product._id}>
                                 <TableCell>{product.name}</TableCell>
                                 <TableCell>{product.description}</TableCell>

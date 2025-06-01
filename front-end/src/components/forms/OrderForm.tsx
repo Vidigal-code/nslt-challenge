@@ -38,7 +38,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, initialData }) => {
                 }}
             >
                 <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                    <Grid>
                         <InputLabel>Product IDs (comma-separated)</InputLabel>
                         <TextField
                             value={productIds.join(', ')}
@@ -47,7 +47,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, initialData }) => {
                             required
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid>
                         <InputLabel>Total</InputLabel>
                         <TextField
                             type="number"
@@ -58,7 +58,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, initialData }) => {
                             inputProps={{ min: 1}}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid>
                         <InputLabel>Date</InputLabel>
                         <TextField
                             type="date"
@@ -68,7 +68,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, initialData }) => {
                             required
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid>
                         <Button type="submit" variant="contained" color="primary" fullWidth>
                             {initialData ? 'Update Order' : 'Create Order'}
                         </Button>

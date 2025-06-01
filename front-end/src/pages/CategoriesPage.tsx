@@ -40,7 +40,7 @@ const CategoriesPage: React.FC = () => {
     return (
         <div>
             <Grid container spacing={2} justifyContent="center" sx={{ p: 0 }}>
-                <Grid item xs={12} sm={6} md={4} lg={3}>
+                <Grid>
                     <Button
                         variant="contained"
                         color="primary"
@@ -54,7 +54,7 @@ const CategoriesPage: React.FC = () => {
                     </Button>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={4} lg={3}>
+                <Grid>
                     <Button
                         variant="contained"
                         color="secondary"

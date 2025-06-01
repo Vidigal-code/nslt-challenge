@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "module": "es2020",
     "jsx": "react-jsx",
     "moduleResolution": "node",
     "esModuleInterop": true,

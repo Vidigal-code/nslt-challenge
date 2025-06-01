@@ -356,7 +356,7 @@ const DashboardPage = () => {
                                 </Box>
 
                                 <Grid container spacing={3}>
-                                    <Grid item xs={12} sm={6} lg={3}>
+                                    <Grid>
                                         <TextField
                                             label="Category ID"
                                             value={filters.category}
@@ -368,7 +368,7 @@ const DashboardPage = () => {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12} sm={6} lg={3}>
+                                    <Grid>
                                         <TextField
                                             label="Product ID"
                                             value={filters.product}
@@ -380,7 +380,7 @@ const DashboardPage = () => {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12} sm={6} lg={3}>
+                                    <Grid>
                                         <TextField
                                             label="Start Date"
                                             type="date"
@@ -396,7 +396,7 @@ const DashboardPage = () => {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12} sm={6} lg={3}>
+                                    <Grid>
                                         <TextField
                                             label="End Date"
                                             type="date"
@@ -412,7 +412,7 @@ const DashboardPage = () => {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12} sm={6} lg={3}>
+                                    <Grid>
                                         <FormControl fullWidth>
                                             <InputLabel sx={{
                                                 fontWeight: 500,
@@ -452,7 +452,7 @@ const DashboardPage = () => {
                                         </FormControl>
                                     </Grid>
 
-                                    <Grid item xs={12} lg={9}>
+                                    <Grid>
                                         <Box sx={{
                                             display: 'flex',
                                             gap: 2,
@@ -593,7 +593,7 @@ const DashboardPage = () => {
                                     justifyContent="center"
                                     alignItems="center"
                                 >
-                                    <Grid item xs={12} sm={6} lg={3}>
+                                    <Grid>
                                         <Grow in timeout={800}>
                                             <Card sx={kpiCardStyle}>
                                                 <CardContent sx={{p: 3}}>
@@ -636,7 +636,7 @@ const DashboardPage = () => {
                                         </Grow>
                                     </Grid>
 
-                                    <Grid item xs={12} sm={6} lg={3}>
+                                    <Grid>
                                         <Grow in timeout={600}>
                                             <Card sx={kpiCardStyle}>
                                                 <CardContent sx={{p: 3}}>
@@ -688,7 +688,7 @@ const DashboardPage = () => {
                                     justifyContent="center"
                                     alignItems="center"
                                 >
-                                    <Grid item xs={12} sm={6} lg={3}>
+                                    <Grid>
                                         <Grow in timeout={1000}>
                                             <Card sx={kpiCardStyle}>
                                                 <CardContent sx={{p: 3}}>
@@ -729,7 +729,7 @@ const DashboardPage = () => {
                                         </Grow>
                                     </Grid>
 
-                                    <Grid item xs={12} sm={6} lg={3}>
+                                    <Grid>
                                         <Grow in timeout={1200}>
                                             <Card sx={kpiCardStyle}>
                                                 <CardContent sx={{p: 3}}>

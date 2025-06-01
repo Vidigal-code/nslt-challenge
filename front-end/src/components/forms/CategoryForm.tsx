@@ -37,7 +37,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onSubmit, initialData }) =>
                 }}
             >
                 <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                    <Grid>
                         <InputLabel>Name</InputLabel>
                         <TextField
                             value={name}
@@ -46,7 +46,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onSubmit, initialData }) =>
                             required
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid>
                         <Button type="submit" variant="contained" color="primary" fullWidth>
                             {initialData ? 'Update Category' : 'Create Category'}
                         </Button>

@@ -75,7 +75,7 @@ const ProductForm: React.FC<ProductFormProps> = ({onSubmit, initialData}) => {
                 }}
             >
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid>
                         <InputLabel>Name</InputLabel>
                         <TextField
                             value={name}
@@ -84,7 +84,7 @@ const ProductForm: React.FC<ProductFormProps> = ({onSubmit, initialData}) => {
                             required
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid>
                         <InputLabel>Description</InputLabel>
                         <TextField
                             value={description}
@@ -93,18 +93,23 @@ const ProductForm: React.FC<ProductFormProps> = ({onSubmit, initialData}) => {
                             required
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid>
                         <InputLabel>Price</InputLabel>
                         <TextField
                             type="number"
                             value={price}
-                            onChange={(e) => setPrice(e.target.value)}
+                            onChange={(e) => {
+                                const value = parseFloat(e.target.value);
+                                if (!isNaN(value)) {
+                                    setPrice(value);
+                                }
+                            }}
                             fullWidth
                             required
                             inputProps={{ min: 1}}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid>
                         <InputLabel>Category IDs (comma-separated)</InputLabel>
                         <TextField
                             value={categoryIds}
@@ -113,7 +118,7 @@ const ProductForm: React.FC<ProductFormProps> = ({onSubmit, initialData}) => {
                             required
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid>
                         <InputLabel>
                             {error ? (
                                 <p style={{ color: 'red' }}>{error}</p>
@@ -129,7 +134,7 @@ const ProductForm: React.FC<ProductFormProps> = ({onSubmit, initialData}) => {
                             style={{width: '100%'}}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid>
                         <Button type="submit" variant="contained" color="primary" fullWidth>
                             {initialData ? 'Update Product' : 'Create Product'}
                         </Button>
