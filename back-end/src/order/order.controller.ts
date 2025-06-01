@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Put, Delete, HttpException } from '
 import { OrderService } from './order.service';
 import { CreateOrderDto, UpdateOrderDto } from './order.dto';
 import { Types } from 'mongoose';
-import { FindOneDto } from "../dto/find.one.dto";
+import { FindOneDto } from "../types/find.one.dto";
 import {handleError, handleErrorMessageCustom} from '../exception/exception.handle';
 
 

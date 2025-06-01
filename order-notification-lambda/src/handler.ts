@@ -11,7 +11,6 @@ const snsClient = new SNSClient({
 export const sendOrderNotification = async (event: any) => {
     return mongoose.connect(process.env.MONGO_URI!)
         .then(() => {
-
             const orderData = JSON.parse(event.body);
             const order = new Order(orderData);
 
@@ -23,12 +22,10 @@ export const sendOrderNotification = async (event: any) => {
             };
 
             const command = new PublishCommand(snsParams);
-            return snsClient.send(command);
-        })
-        .then(() => {
-            const orderData = JSON.parse(event.body);
-            const order = new Order(orderData);
+            return snsClient.send(command).then(() => order);
 
+        })
+        .then((order) => {
             return {
                 statusCode: 200,
                 body: JSON.stringify({
@@ -42,5 +39,8 @@ export const sendOrderNotification = async (event: any) => {
                 error.message || 'An unexpected error occurred',
                 error.statusCode || 500
             );
+        })
+        .finally(() => {
+            mongoose.connection.close();
         });
 };

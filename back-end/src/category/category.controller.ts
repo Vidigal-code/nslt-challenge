@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Put, Delete, HttpException} from '@
 import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto } from './category.dto';
 import { Types } from "mongoose";
-import { FindOneDto } from "../dto/find.one.dto";
+import { FindOneDto } from "../types/find.one.dto";
 import { handleError } from "../exception/exception.handle";
 
 
