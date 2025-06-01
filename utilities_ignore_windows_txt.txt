@@ -13,10 +13,15 @@ http://localhost:3000/dashboard?product=67be69ce26b0ae6f501eb865
 REMOVE ALL DOCKER WINDOWS
 
 for /f "tokens=*" %i in ('docker ps -aq') do docker stop %i
+
 for /f "tokens=*" %i in ('docker ps -aq') do docker rm %i
-for /f "tokens=*" %i in ('docker images -q') do docker rmi %i
+
+for /f "tokens=*" %i in ('docker images -q') do docker rmi -f %i
+
 for /f "tokens=*" %i in ('docker volume ls -q') do docker volume rm %i
+
 for /f "tokens=*" %i in ('docker network ls -q') do docker network rm %i
+
 
 docker stop $(docker ps -aq)
 docker rm $(docker ps -aq)
