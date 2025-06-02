@@ -30,6 +30,9 @@ export const config = {
     awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
     awsRegion: process.env.AWS_REGION!,
 
+    localstackEndpoint: process.env.LOCALSTACK_ENDPOINT,
+    localstackHost: process.env.LOCALSTACK_HOST,
+
     isDev: process.env.NODE_ENV === 'development',
     isProd: process.env.NODE_ENV === 'production',
 };

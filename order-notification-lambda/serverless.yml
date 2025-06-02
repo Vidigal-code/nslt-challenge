@@ -4,7 +4,10 @@ provider:
   name: aws
   runtime: nodejs20.x
   region: ${env:AWS_REGION}
+  timeout: 30  # Adicione timeout de 30 segundos
   environment:
+    NODE_ENV: ${env:NODE_ENV}
+    SNS_TOPIC_NAME: ${env:SNS_TOPIC_NAME}
     SNS_TOPIC_ARN: ${env:SNS_TOPIC_ARN}
     MONGO_URI: ${env:MONGO_URI}
     AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
@@ -23,14 +26,16 @@ build:
 functions:
   sendOrderNotification:
     handler: src/handler.sendOrderNotification
+    timeout: 30  # Timeout específico para esta função
     events:
       - http:
           path: order/notification
           method: post
-          cors: true
+          cors: false
 
   processSalesReport:
     handler: src/handler.processSalesReport
+    timeout: 30  # Timeout específico para esta função
     events:
       # Runs daily at 9am UTC
       - schedule: cron(0 9 * * ? *)
@@ -38,14 +43,17 @@ functions:
       - http:
           path: reports/sales
           method: post
-          cors: true
+          cors: false
 
 plugins:
+  - serverless-dotenv-plugin
   - serverless-offline
 
 custom:
   serverless-offline:
+    host: 0.0.0.0
     httpPort: 4000
+    timeout: 30  # Timeout para serverless-offline
 
 resources:
   Resources:

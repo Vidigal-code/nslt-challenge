@@ -12,6 +12,20 @@ http://localhost:3000/dashboard?product=67be69ce26b0ae6f501eb865
 
 REMOVE ALL DOCKER WINDOWS
 
+
+for /f "tokens=*" %i in ('docker ps -aq') do docker stop %i
+
+for /f "tokens=*" %i in ('docker ps -aq') do docker rm %i
+
+for /f "tokens=*" %i in ('docker images -q') do docker rmi -f %i
+
+for /f "tokens=*" %i in ('docker volume ls -q') do docker volume rm %i
+
+for /f "tokens=*" %i in ('docker network ls -q') do docker network rm %i
+
+docker builder prune -a -f
+
+
 for /f "tokens=*" %i in ('docker ps -aq') do docker stop %i
 
 for /f "tokens=*" %i in ('docker ps -aq') do docker rm %i
@@ -56,7 +70,7 @@ aws --endpoint-url=http://localhost:4566 sns create-topic --name test-sns-topic
 
 ADD TO DOCKER
 
-docker run -d --name mongo -p 27017:27017 mongo:latest
+docker run -d --name mongodb -p 27017:27017 mongo:latest
 docker run -d --name localstack -p 4566:4566 -e DOCKER_HOST=unix:///var/run/docker.sock -e SERVICES=sns,s3,sts -v /var/run/docker.sock:/var/run/docker.sock -v C:/path/to/your/localstack:/var/lib/localstack localstack/localstack:latest
 
 

@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: localstack-lambda-app
+    ports:
+      - "4000:4000"  # Map host port 4000 to container port 4000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket to allow Docker commands inside the container
+    networks:
+      - app-network  # Connect this service to the app-network
+
+    # Environment variables for running inside the container can be set here
+    # environment:
+    # - NODE_ENV=development
+    # - SNS_TOPIC_ARN=arn:aws:sns:us-east-1:000000000000:my-topic
+    # - SNS_TOPIC_NAME=my-topic
+    # - MONGO_URI=mongodb://mongo:27017/nouslatam
+    # - AWS_ACCESS_KEY_ID=test
+    # - AWS_SECRET_ACCESS_KEY=test
+    # - AWS_REGION=us-east-1
+
+    env_file:
+      - .env  # Load environment variables from the .env file in the project root
+
+    depends_on:
+      - localstack  # Wait for localstack service to start before app
+      - mongo       # Wait for mongo service to start before app
+    restart: unless-stopped  # Restart the container unless explicitly stopped
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566"  # Localstack edge service port mapping
+    # Environment variables for localstack can be specified here:
+    # environment:
+    #  - SERVICES=sns,s3,lambda  # Enable these AWS services in localstack
+    #  - DEBUG=1
+    #  - AWS_DEFAULT_REGION=us-east-1
+    #  - AWS_ACCESS_KEY_ID=test
+    #  - AWS_SECRET_ACCESS_KEY=test
+    env_file:
+      - .env  # Load environment variables from the same .env file
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket to allow localstack Docker integrations
+    networks:
+      - app-network  # Connect localstack to the app-network
+
+  mongo:
+    image: mongo:6.0  # Use MongoDB version 6.0 image
+    container_name: mongodb
+    ports:
+      - "27017:27017"  # Map MongoDB default port to host
+    networks:
+      - app-network  # Connect mongo to the app-network
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro  # Mount a MongoDB init script (read-only)
+      - mongo_data:/data/db  # Use the named volume mongo_data to persist database files at /data/db
+
+networks:
+  app-network:
+    driver: bridge  # Use default bridge driver for isolated network communication between containers
+
+volumes:
+  mongo_data:  # Named volume managed by Docker to persist MongoDB data beyond container lifecycle

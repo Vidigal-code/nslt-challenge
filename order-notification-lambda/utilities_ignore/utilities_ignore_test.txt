@@ -1,0 +1,14 @@
+
+POST http://localhost:4000/dev/order/notification
+
+{
+  "orderId": "683d759be6d5be9cc7c88a28",
+  "date": "2025-02-26T00:00:00Z",
+  "productIds": [
+    "67bf6c3ae24627885ac7cf5c",
+    "67bf6c3ae24627885ac7cf60"
+  ],
+  "total": 150.75
+}
+
+TEST

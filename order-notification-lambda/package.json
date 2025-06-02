@@ -11,7 +11,8 @@
     "aws-lambda": "^1.0.7",
     "dotenv": "^16.5.0",
     "mongoose": "^8.15.1",
-    "serverless": "^4.15.1"
+    "serverless": "^4.15.1",
+    "zod": "^3.25.48"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.149",
