@@ -27,5 +27,6 @@ dist-ssr
 
 *storybook.log
 *doctor-storybook.log
+pnpm-lock.yaml
 
 .env
