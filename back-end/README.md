@@ -30,16 +30,56 @@ AWS_SECRET_ACCESS_KEY=test
 MONGO_URI=mongodb://127.0.0.1:27017/nouslatam
 API_LAMBDA=http://localhost:4000/dev/order/notification
 ```
+
+---
+
+### Explanation of Environment Variables Inside a Container
+
+When running a back-end application like an Express server **inside a Docker container**, the values of certain environment variables need to reflect the internal Docker network. Instead of using `localhost`, you reference other services by their **container names** defined in `docker-compose.yml`.
+
+Here’s how the `.env` file would look **inside the container**:
+
+```env
+HOST=localhost
+PORT=3000
+HTTPS=false
+API_FRONTEND=http://localhost:5173
+AWS_REGION=us-east-1
+S3_ENDPOINT=http://localstack:4566
+AWS_ACCESS_KEY_ID=test
+AWS_SECRET_ACCESS_KEY=test
+MONGO_URI=mongodb://mongo:27017/nouslatam
+API_LAMBDA=http://localstack-lambda-app:4000/dev/order/notification
+```
+
+### Key Differences:
+
+* `S3_ENDPOINT=http://localstack:4566`
+  → Uses the container name `localstack` instead of `localhost`, because that's how it's accessed from within the Docker network.
+
+* `MONGO_URI=mongodb://mongo:27017/nouslatam`
+  → The hostname `mongo` refers to the MongoDB container, not the local machine.
+
+* `API_LAMBDA=http://localstack-lambda-app:4000/dev/order/notification`
+  → Refers to another container named `localstack-lambda-app`.
+
+Using container names allows the services to correctly locate and communicate with each other **within the isolated Docker network**.
+
+---
+
 ### Environment Variables
 
-- **HOST:** Defines the hostname or IP address on which the back-end server will listen. In this example, it’s set to `localhost`, which means the server will only be accessible from the same machine it’s running on.
-- **PORT:** Defines the port on which the back-end server will listen. In this example, it’s set to port `3000`.
-- **HTTPS:** This indicates whether the server should use HTTPS. In this case, it’s set to `false` (non-HTTPS).
-- **API_FRONTEND:** Specifies the front-end URL. In this case, it's the URL of the front-end app running locally (e.g., `http://localhost:5173`).
-- **AWS_REGION:** Defines the AWS region for the application. In this example, it’s set to `us-east-1`.
-- **S3_ENDPOINT:** Configures the endpoint for AWS S3 storage. This might be configured for a local S3 mock server (e.g., `http://localhost:4566` for LocalStack).
-- **AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:** These are the AWS credentials required for accessing services like S3. In a local development environment, they are often set to dummy values.
-- **MONGO_URI:** Defines the connection string for MongoDB. In this example, it connects to a local MongoDB instance (e.g., `mongodb://127.0.0.1:27017/nouslatam`).
+* **HOST:** Defines the hostname or IP address on which the back-end server will listen. In this example, it’s set to `localhost`, which means the server will only be accessible from the same machine it’s running on.
+* **PORT:** Specifies the port on which the back-end server will listen. Here, it’s set to `3000`.
+* **HTTPS:** Indicates whether the server should use HTTPS. In this case, it’s set to `false` (non-HTTPS).
+* **API\_FRONTEND:** Specifies the URL of the front-end application. In this example, it points to the local development server (e.g., `http://localhost:5173`).
+* **AWS\_REGION:** Defines the AWS region where services (like S3 or Lambda) are configured. In this case, it's set to `us-east-1`.
+* **S3\_ENDPOINT:** Sets the endpoint for AWS S3. When using a mock like LocalStack, this typically points to a local address (e.g., `http://localhost:4566`).
+* **AWS\_ACCESS\_KEY\_ID** and **AWS\_SECRET\_ACCESS\_KEY:** These environment variables represent the AWS credentials required to authenticate with AWS services. For local development, dummy values are usually sufficient.
+* **MONGO\_URI:** Specifies the MongoDB connection string. In this case, it connects to a local MongoDB instance (e.g., `mongodb://127.0.0.1:27017/nouslatam`).
+* **API\_LAMBDA:** Specifies the URL endpoint for invoking a Lambda-like service (such as one running on LocalStack). For example, `http://localhost:4000/dev/order/notification` points to a locally hosted server that simulates a Lambda function.
+
+---
 
 ### Steps to Create a `.env` File
 

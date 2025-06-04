@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Challenge Front-end",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "serve": "vite preview",
     "storybook": "storybook dev -p 6006",

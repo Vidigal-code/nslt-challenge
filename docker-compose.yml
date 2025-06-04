@@ -1,71 +1,82 @@
 version: '3.8'
 
 services:
+  # Lambda-like app for order notifications
+  app:
+    build:
+      context: ./order-notification-lambda  # Directory containing the Dockerfile
+    container_name: localstack-lambda-app
+    ports:
+      - "4000:4000"  # Expose port 4000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Allows Docker-in-Docker (used by LocalStack or testing tools)
+    networks:
+      - app-network
+    env_file:
+      - ./order-notification-lambda/.env  # Load environment variables from file
+    depends_on:
+      - localstack  # Ensure localstack starts before this service
+      - mongo       # Ensure mongo starts before this service
+    restart: unless-stopped  # Restart container unless it is manually stopped
 
-  # Backend Service
+  # Backend NestJS - MVC server
   backend:
     build:
-      context: ./back-end
-    container_name: backend
+      context: ./back-end  # Directory containing the Dockerfile
+    container_name: backend-nslt-challenge
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Expose backend API on port 3000
+    env_file:
+      - ./back-end/.env  # Load environment variables from file
     networks:
       - app-network
     depends_on:
-      - lambda-offline
+      - mongo  # Wait for MongoDB to be ready before starting backend
 
-  # Frontend Service
+  # Frontend Vite app, ReactJS
   frontend:
     build:
-      context: ./front-end
-    container_name: frontend
+      context: ./front-end  # Directory containing the Dockerfile
+    container_name: frontend-nslt-challenge
     ports:
-      - "5173:5173"
+      - "5173:5173"  # Expose frontend on port 5173
+    env_file:
+      - ./front-end/.env  # Load environment variables from file
     networks:
       - app-network
     depends_on:
-      - backend
+      - backend  # Ensure backend starts before frontend
 
-  # Lambda Offline Service (Order Notification Lambda)
-  lambda-offline:
-    build:
-      context: ./order-notification-lambda
-    container_name: lambda-offline
+  # LocalStack to simulate AWS services
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
     ports:
-      - "4000:4000"
+      - "4566:4566"  # Default edge port for LocalStack services (S3, Lambda, etc.)
+    env_file:
+      - ./order-notification-lambda/.env  # Load LocalStack-specific env variables
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Required for some LocalStack operations
     networks:
       - app-network
 
-  # It is commented out to run manually, uncomment and configure everything in dokcer if you want
+  # MongoDB service
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    ports:
+      - "27017:27017"  # Expose MongoDB port
+    networks:
+      - app-network
+    volumes:
+      - ./order-notification-lambda/./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro  # Initialize DB with script
+      - mongo_data:/data/db  # Persist MongoDB data
 
-  # MongoDB Service (Commented out)
-  # mongo:
-  #   image: mongo:latest
-  #   container_name: mongo
-  #   ports:
-  #     - "27017:27017"
-  #   volumes:
-  #     - mongo_data:/data/db
-  #   networks:
-  #     - app-network
-
-  # Localstack Service (Commented out)
-  # localstack:
-  #   image: localstack/localstack:latest
-  #   ports:
-  #     - "4566:4566"
-  #   environment:
-  #     - DOCKER_HOST=unix:///var/run/docker.sock
-  #     - SERVICES=sns,s3,sts
-  #   volumes:
-  #     - "/var/run/docker.sock:/var/run/docker.sock"
-  #     - "./tmp/localstack:/var/lib/localstack"
-  #   networks:
-  #     - localstack-network
-
+# Define a custom bridge network for container communication
 networks:
   app-network:
     driver: bridge
 
-# volumes:
-#   mongo_data:  # Uncomment if you need MongoDB
+# Named volume for persistent MongoDB data
+volumes:
+  mongo_data:
