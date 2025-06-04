@@ -32,4 +32,4 @@ RUN npm install --force
 EXPOSE 4000
 
 # Default command to run when the container starts
-CMD ["./entrypoint.sh"]
+CMD ["bash", "./entrypoint.sh"]
