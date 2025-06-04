@@ -107,6 +107,7 @@ This will:
   ```
 
 
+<img src="./example/docker-desktop-containers.png" alt="" width="800"/> 
 
 
 ---
