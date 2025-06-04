@@ -55,10 +55,10 @@ export class AwsService {
         };
 
         const command = new PutObjectCommand(params);
-        const endpoint = process.env.S3_ENDPOINT?.replace(/^https?:\/\//, '');
+        const endpointmybucket = process.env.S3_ENDPOINT_HOST_MY_BUCKET;
 
         return this.s3.send(command)
-            .then(() => `http://${endpoint}/my-bucket/${params.Key}`)
+            .then(() => `${endpointmybucket}/my-bucket/${params.Key}`)
             .catch((error) => {
                 handleAwsError(error, 'Uploading image to S3');
             });

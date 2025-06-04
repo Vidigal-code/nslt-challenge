@@ -51,6 +51,7 @@ HTTPS=false
 API_FRONTEND=http://localhost:5173
 AWS_REGION=us-east-1
 S3_ENDPOINT=http://localstack:4566
+S3_ENDPOINT_HOST_MY_BUCKET=localhost:4566
 AWS_ACCESS_KEY_ID=test
 AWS_SECRET_ACCESS_KEY=test
 MONGO_URI=mongodb://mongo:27017/nouslatam
@@ -145,6 +146,7 @@ HTTPS=false
 API_FRONTEND=http://localhost:5173
 AWS_REGION=us-east-1
 S3_ENDPOINT=http://localhost:4566
+S3_ENDPOINT_HOST_MY_BUCKET=http://localhost:4566
 AWS_ACCESS_KEY_ID=test
 AWS_SECRET_ACCESS_KEY=test
 MONGO_URI=mongodb://127.0.0.1:27017/nouslatam
@@ -165,6 +167,7 @@ HTTPS=false
 API_FRONTEND=http://localhost:5173
 AWS_REGION=us-east-1
 S3_ENDPOINT=http://localstack:4566
+S3_ENDPOINT_HOST_MY_BUCKET=http://localhost:4566
 AWS_ACCESS_KEY_ID=test
 AWS_SECRET_ACCESS_KEY=test
 MONGO_URI=mongodb://mongo:27017/nouslatam
@@ -188,15 +191,16 @@ Using container names allows the services to correctly locate and communicate wi
 
 ### Environment Variables
 
-* **HOST:** Defines the hostname or IP address on which the back-end server will listen. In this example, it’s set to `localhost`, which means the server will only be accessible from the same machine it’s running on.
+* **HOST:** Defines the hostname or IP address on which the back-end server will listen. In this example, it’s set to `localhost`, meaning the server will only be accessible from the same machine it’s running on.
 * **PORT:** Specifies the port on which the back-end server will listen. Here, it’s set to `3000`.
 * **HTTPS:** Indicates whether the server should use HTTPS. In this case, it’s set to `false` (non-HTTPS).
-* **API\_FRONTEND:** Specifies the URL of the front-end application. In this example, it points to the local development server (e.g., `http://localhost:5173`).
-* **AWS\_REGION:** Defines the AWS region where services (like S3 or Lambda) are configured. In this case, it's set to `us-east-1`.
-* **S3\_ENDPOINT:** Sets the endpoint for AWS S3. When using a mock like LocalStack, this typically points to a local address (e.g., `http://localhost:4566`).
-* **AWS\_ACCESS\_KEY\_ID** and **AWS\_SECRET\_ACCESS\_KEY:** These environment variables represent the AWS credentials required to authenticate with AWS services. For local development, dummy values are usually sufficient.
-* **MONGO\_URI:** Specifies the MongoDB connection string. In this case, it connects to a local MongoDB instance (e.g., `mongodb://127.0.0.1:27017/nouslatam`).
-* **API\_LAMBDA:** Specifies the URL endpoint for invoking a Lambda-like service (such as one running on LocalStack). For example, `http://localhost:4000/dev/order/notification` points to a locally hosted server that simulates a Lambda function.
+* **API_FRONTEND:** Specifies the URL of the front-end application. In this example, it points to the local development server (e.g., `http://localhost:5173`).
+* **AWS_REGION:** Defines the AWS region where services (like S3 or Lambda) are configured. In this case, it's set to `us-east-1`.
+* **S3_ENDPOINT:** Sets the endpoint for AWS S3. When using a mock service like LocalStack, this typically points to a local address (e.g., `http://localhost:4566`).
+* **S3_ENDPOINT_HOST_MY_BUCKET:** Defines the host-style endpoint for accessing an S3 bucket, often used when running a local mock like LocalStack. For example, this might be `http://localhost:4566` to simulate access to `http://localhost:4566/my-bucket/`.
+* **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY:** Represent the AWS credentials required to authenticate with AWS services. For local development, dummy values are typically sufficient.
+* **MONGO_URI:** Specifies the MongoDB connection string. In this case, it connects to a local MongoDB instance (e.g., `mongodb://127.0.0.1:27017/nouslatam`).
+* **API_LAMBDA:** Specifies the URL endpoint for invoking a Lambda-like service (such as one running on LocalStack). For example, `http://localhost:4000/dev/order/notification` points to a locally hosted server that simulates a Lambda function.
 
 ---
 
