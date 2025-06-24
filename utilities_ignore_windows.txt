@@ -13,36 +13,23 @@ http://localhost:3000/dashboard?product=67be69ce26b0ae6f501eb865
 REMOVE ALL DOCKER WINDOWS
 
 
-for /f "tokens=*" %i in ('docker ps -aq') do docker stop %i
+:: Stop all containers
+for /f "tokens=*" %i in ('docker ps -aq') docker stop %i
 
-for /f "tokens=*" %i in ('docker ps -aq') do docker rm %i
+:: Remove all containers
+for /f "tokens=*" %i in ('docker ps -aq') docker rm %i
 
-for /f "tokens=*" %i in ('docker images -q') do docker rmi -f %i
+:: Remove all images
+for /f "tokens=*" %i in ('docker images -q') docker rmi -f %i
 
-for /f "tokens=*" %i in ('docker volume ls -q') do docker volume rm %i
+:: Remove all volumes
+for /f "tokens=*" %i in ('docker volume ls -q') docker volume rm %i
 
+:: Remove all networks
 for /f "tokens=*" %i in ('docker network ls -q') do docker network rm %i
 
+:: Remove builder cache and old builds
 docker builder prune -a -f
-
-
-for /f "tokens=*" %i in ('docker ps -aq') do docker stop %i
-
-for /f "tokens=*" %i in ('docker ps -aq') do docker rm %i
-
-for /f "tokens=*" %i in ('docker images -q') do docker rmi -f %i
-
-for /f "tokens=*" %i in ('docker volume ls -q') do docker volume rm %i
-
-for /f "tokens=*" %i in ('docker network ls -q') do docker network rm %i
-
-
-docker stop $(docker ps -aq)
-docker rm $(docker ps -aq)
-docker image prune -a -f
-docker builder prune -f
-docker volume prune -f
-docker network prune -f
 
 
 
