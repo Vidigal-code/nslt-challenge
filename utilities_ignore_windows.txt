@@ -12,23 +12,24 @@ http://localhost:3000/dashboard?product=67be69ce26b0ae6f501eb865
 
 REMOVE ALL DOCKER WINDOWS
 
-:: Parar todos os containers
+:: Stop all running containers
 for /f "tokens=*" %i in ('docker ps -aq') do docker stop %i
 
-:: Remover todos os containers
+:: Remove all containers
 for /f "tokens=*" %i in ('docker ps -aq') do docker rm %i
 
-:: Remover todas as imagens
+:: Remove all Docker images
 for /f "tokens=*" %i in ('docker images -q') do docker rmi -f %i
 
-:: Remover todos os volumes
+:: Remove all Docker volumes
 for /f "tokens=*" %i in ('docker volume ls -q') do docker volume rm %i
 
-:: Remover todas as redes
+:: Remove all Docker networks
 for /f "tokens=*" %i in ('docker network ls -q') do docker network rm %i
 
-:: Remover cache e builds antigos
+:: Prune build cache and unused build data
 docker builder prune -a -f
+
 
 
 START serverless
