@@ -12,6 +12,7 @@ describe('Orders E2E', () => {
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
     process.env.MONGO_URI = mongoServer.getUri();
+    process.env.SKIP_S3 = 'true';
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],

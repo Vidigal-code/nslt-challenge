@@ -18,6 +18,11 @@ export class ProductService implements OnModuleInit {
     ) {}
 
     async onModuleInit() {
+        // Skip S3 interactions during automated tests to avoid network calls
+        if (process.env.NODE_ENV === 'test' || process.env.SKIP_S3 === 'true') {
+            return;
+        }
+
         return this.imageStorage.createBucketIfNotExists()
             .catch((error) => {
                 console.error('Error creating bucket:', error.message);
