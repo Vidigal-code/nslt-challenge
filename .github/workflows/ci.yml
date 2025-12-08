@@ -16,7 +16,7 @@ jobs:
         with:
           version: 9
       - name: Install
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
       - name: Test
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID || 'test' }}
@@ -35,7 +35,7 @@ jobs:
         with:
           version: 9
       - name: Install
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
       - name: Test
         run: pnpm test
 
@@ -50,7 +50,7 @@ jobs:
         with:
           version: 9
       - name: Install
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
       - name: Test
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID || 'test' }}
