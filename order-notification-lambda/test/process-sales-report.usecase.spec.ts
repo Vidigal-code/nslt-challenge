@@ -1,4 +1,4 @@
-import { ProcessSalesReportUseCase } from './process-sales-report.usecase';
+import { ProcessSalesReportUseCase } from '../src/application/use-cases/process-sales-report.usecase';
 
 describe('ProcessSalesReportUseCase', () => {
   const orderRepo = {

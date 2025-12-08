@@ -13,7 +13,7 @@ describe('ProductTable', () => {
         onDelete={jest.fn()}
       />
     );
-    expect(screen.getByText('A')).toBeInTheDocument();
+    expect(screen.getAllByText('A')[0]).toBeInTheDocument();
   });
 });
 

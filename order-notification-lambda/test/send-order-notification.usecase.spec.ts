@@ -1,4 +1,4 @@
-import { SendOrderNotificationUseCase } from './send-order-notification.usecase';
+import { SendOrderNotificationUseCase } from '../src/application/use-cases/send-order-notification.usecase';
 
 describe('SendOrderNotificationUseCase', () => {
   const orderRepo = {
@@ -8,6 +8,10 @@ describe('SendOrderNotificationUseCase', () => {
     publish: jest.fn(),
   };
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('returns 404 when order not found', async () => {
     orderRepo.findById.mockResolvedValue(null);
     const useCase = new SendOrderNotificationUseCase(orderRepo as any, notifier as any);
@@ -16,11 +20,11 @@ describe('SendOrderNotificationUseCase', () => {
   });
 
   it('returns 200 when order exists', async () => {
-    orderRepo.findById.mockResolvedValue({ _id: '1', total: 10, productIds: [], date: new Date() });
-    notifier.publish.mockResolvedValue(undefined);
+    orderRepo.findById.mockResolvedValue({ id: '1', total: 10, productIds: ['a'] });
     const useCase = new SendOrderNotificationUseCase(orderRepo as any, notifier as any);
     const res = await useCase.execute({ orderId: '1', total: 10 });
     expect(res.statusCode).toBe(200);
+    expect(notifier.publish).toHaveBeenCalled();
   });
 });
 
