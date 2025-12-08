@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { connection, disconnect } from 'mongoose';
@@ -29,7 +29,6 @@ describe('Orders E2E', () => {
   });
 
   it('creates an order and lists it', async () => {
-    // create product
     const productRes = await request(app.getHttpServer())
       .post('/products')
       .send({
@@ -41,8 +40,6 @@ describe('Orders E2E', () => {
       .expect(201);
 
     const productId = productRes.body._id;
-
-    // create order
     await request(app.getHttpServer())
       .post('/orders')
       .send({
