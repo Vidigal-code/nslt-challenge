@@ -57,11 +57,19 @@ export class DashboardService {
             matchStage.productIds = { $in: productIds };
         }
 
-        if (filters.startDate && filters.endDate) {
-            matchStage.date = {
-                $gte: new Date(filters.startDate),
-                $lte: new Date(filters.endDate)
-            };
+        if (filters.startDate || filters.endDate) {
+            const range: Record<string, Date> = {};
+            if (filters.startDate) {
+                const d = new Date(filters.startDate);
+                d.setHours(0, 0, 0, 0);
+                range.$gte = d;
+            }
+            if (filters.endDate) {
+                const d = new Date(filters.endDate);
+                d.setHours(23, 59, 59, 999);
+                range.$lte = d;
+            }
+            matchStage.date = range;
         }
 
         if (Object.keys(matchStage).length > 0) {

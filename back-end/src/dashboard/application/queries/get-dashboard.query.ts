@@ -1,8 +1,8 @@
 export interface DashboardFilters {
     categoryId?: string;
     productId?: string;
-    startDate?: string;
-    endDate?: string;
+    startDate?: string | Date;
+    endDate?: string | Date;
     period?: string;
 }
 
