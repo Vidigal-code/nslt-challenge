@@ -19,10 +19,10 @@ describe('Products E2E', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
-  });
+  }, 30000);
 
   afterAll(async () => {
-    await app.close();
+    if (app) await app.close();
     await connection.close();
     await disconnect();
     if (mongoServer) await mongoServer.stop();
