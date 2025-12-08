@@ -167,7 +167,7 @@ export const useDashboardQuery = (filters: Record<string, string | number | unde
                 if (value) params.append(key, String(value));
             });
             const res = await apiClient.get(`/dashboard?${params.toString()}`);
-            return res.data;
+            return res.data?.data ?? res.data;
         },
     });
 
