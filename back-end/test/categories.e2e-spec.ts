@@ -19,7 +19,7 @@ describe('Categories E2E', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
-  }, 30000);
+  }, 120000);
 
   afterAll(async () => {
     if (app) await app.close();

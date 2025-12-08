@@ -6,6 +6,7 @@
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
+  "runInBand": true,
   "moduleNameMapper": {
     "^src/(.*)$": "<rootDir>/src/$1",
     "^src/types/utils/sanitize$": "<rootDir>/test/__mocks__/src/types/utils/sanitize.ts"
