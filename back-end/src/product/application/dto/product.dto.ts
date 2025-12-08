@@ -1,7 +1,7 @@
 import {IsString, IsNumber, IsArray, IsOptional, IsUrl, IsNotEmpty, IsPositive} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {sanitizeInput} from "src/types/utils/sanitize";
 
+const sanitizeInput = <T>(value: T): T => value;
 export class CreateProductDto {
     @ApiProperty({ example: 'Notebook', description: 'Product name' })
     @IsString()
