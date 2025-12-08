@@ -18,7 +18,6 @@ import {
     Paper
 } from '@mui/material';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Bar, BarChart} from 'recharts';
-import {fetchDashboardData} from '../api/Api';
 import {DashboardResponse, DashboardChartItem} from "../types/interface/Interfaces";
 import {
     FilterList,
@@ -31,11 +30,10 @@ import {
     ShoppingCart,
     DateRange
 } from '@mui/icons-material';
+import { useDashboardQuery } from '../shared/api/hooks';
 
 const DashboardPage = () => {
 
-    const [data, setData] = useState<DashboardResponse | null>(null);
-    const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({
         category: '',
         product: '',
@@ -43,31 +41,7 @@ const DashboardPage = () => {
         end: '',
         period: 'daily'
     });
-
-    const loadData = async () => {
-        setLoading(true);
-        try {
-            const response = await fetchDashboardData(filters);
-            if (!response.success) {
-                throw new Error('Error loading dashboard data');
-            }
-            setData(response.data || {
-                kpis: {
-                    totalOrders: 0,
-                    totalRevenue: 0,
-                    averageOrderValue: 0,
-                    uniqueProducts: 0,
-                    totalPeriods: 0,
-                    bestPeriod: null
-                },
-                chartData: []
-            });
-        } catch (error) {
-            console.error('Dashboard data loading error:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { data, isFetching, refetch } = useDashboardQuery(filters);
 
     const handleFilterChange = (field: string) => (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent
@@ -76,7 +50,7 @@ const DashboardPage = () => {
     };
 
     const handleApplyFilters = () => {
-        loadData();
+        refetch();
     };
 
     const handleClearFilters = () => {
@@ -117,10 +91,6 @@ const DashboardPage = () => {
     const formatNumber = (value: number) => {
         return new Intl.NumberFormat('en-US').format(value);
     };
-
-    useEffect(() => {
-        loadData();
-    }, []);
 
     const {kpis, chartData} = data || {};
     const totalOrders = kpis?.totalOrders || 0;
@@ -463,18 +433,18 @@ const DashboardPage = () => {
                                             <Button
                                                 variant="contained"
                                                 onClick={handleApplyFilters}
-                                                disabled={loading}
-                                                startIcon={loading ? <CircularProgress size={20} color="inherit"/> :
+                                                disabled={isFetching}
+                                                startIcon={isFetching ? <CircularProgress size={20} color="inherit"/> :
                                                     <Search/>}
                                                 sx={primaryButtonStyle}
                                             >
-                                                {loading ? 'Applying...' : 'Apply Filters'}
+                                                {isFetching ? 'Applying...' : 'Apply Filters'}
                                             </Button>
 
                                             <Button
                                                 variant="outlined"
                                                 onClick={handleClearFilters}
-                                                disabled={loading}
+                                                disabled={isFetching}
                                                 startIcon={<Clear/>}
                                                 sx={secondaryButtonStyle}
                                             >
@@ -555,7 +525,7 @@ const DashboardPage = () => {
                     </Paper>
                 </Fade>
 
-                {loading && (
+                {isFetching && (
                     <Fade in timeout={300}>
                         <Box sx={{
                             display: 'flex',
@@ -581,7 +551,7 @@ const DashboardPage = () => {
                     </Fade>
                 )}
 
-                {!loading && data && (
+                {!isFetching && data && (
                     <>
 
                         <Fade in timeout={1400}>

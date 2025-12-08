@@ -1,23 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
-import { ProductService } from '../src/product/product.service';
-import { CategoryService } from '../src/category/category.service';
-import { OrderService } from '../src/order/order.service';
+import { ProductService } from '../src/product/application/use-cases/product.service';
+import { CategoryService } from '../src/category/application/use-cases/category.service';
+import { OrderService } from '../src/order/application/use-cases/order.service';
 import 'src/config';
-
-interface Category {
-    _id: string;
-    name: string;
-}
-
-interface Product {
-    _id: string;
-    name: string;
-    description: string;
-    price: number;
-    categoryIds: string[];
-    imageUrl: string;
-}
 
 async function bootstrap() {
 
@@ -31,104 +17,108 @@ async function bootstrap() {
     await productService.deleteAll();
     await orderService.deleteAll();
 
-    const categories = (await categoryService.createMany([
+    const categories = await categoryService.createMany([
         { name: 'Eletrônicos' },
         { name: 'Roupas' },
         { name: 'Acessórios' },
         { name: 'Cozinha' },
         { name: 'Móveis' },
         { name: 'Beleza' },
-    ])) as Category[];
+    ]);
 
-    const products = (await productService.createMany([
+    const getCategoryId = (index: number) => categories[index]._id.toString();
+
+    const products = await productService.createMany([
         {
             name: 'Notebook',
             description: 'Notebook potente com 16GB de RAM',
             price: 5000,
-            categoryIds: [categories[0]._id],
+            categoryIds: [getCategoryId(0)],
             imageUrl: 'http://example.com/notebook.jpg',
         },
         {
             name: 'Camiseta',
             description: 'Camiseta confortável de algodão',
             price: 50,
-            categoryIds: [categories[1]._id],
+            categoryIds: [getCategoryId(1)],
             imageUrl: 'http://example.com/camiseta.jpg',
         },
         {
             name: 'Smartphone',
             description: 'Smartphone com câmera de 48MP',
             price: 2500,
-            categoryIds: [categories[0]._id, categories[2]._id],
+            categoryIds: [getCategoryId(0), getCategoryId(2)],
             imageUrl: 'http://example.com/smartphone.jpg',
         },
         {
             name: 'Geladeira',
             description: 'Geladeira com capacidade de 500L e tecnologia inverter',
             price: 3500,
-            categoryIds: [categories[3]._id],
+            categoryIds: [getCategoryId(3)],
             imageUrl: 'http://example.com/geladeira.jpg',
         },
         {
             name: 'Sofá',
             description: 'Sofá confortável de 3 lugares',
             price: 2000,
-            categoryIds: [categories[4]._id],
+            categoryIds: [getCategoryId(4)],
             imageUrl: 'http://example.com/sofa.jpg',
         },
         {
             name: 'Perfume',
             description: 'Perfume feminino de longa duração',
             price: 150,
-            categoryIds: [categories[5]._id],
+            categoryIds: [getCategoryId(5)],
             imageUrl: 'http://example.com/perfume.jpg',
         },
         {
             name: 'Fone de Ouvido',
             description: 'Fone de ouvido com cancelamento de ruído',
             price: 500,
-            categoryIds: [categories[0]._id],
+            categoryIds: [getCategoryId(0)],
             imageUrl: 'http://example.com/fone.jpg',
         },
         {
             name: 'Camisola',
             description: 'Camisola de seda confortável',
             price: 120,
-            categoryIds: [categories[1]._id],
+            categoryIds: [getCategoryId(1)],
             imageUrl: 'http://example.com/camisola.jpg',
         },
-    ])) as Product[];
+    ]);
+
+    const getProductId = (index: number) => products[index]._id.toString();
 
     // Create orders
     await orderService.createMany([
         {
-            date: new Date('2024-01-01'),
-            productIds: [products[0]._id, products[1]._id],
+            date: new Date('2026-01-08'),
+            productIds: [getProductId(0), getProductId(1)],
             total: 5050,
         },
         {
-            date: new Date('2024-01-15'),
-            productIds: [products[2]._id],
+            date: new Date('2026-01-08'),
+            productIds: [getProductId(2)],
             total: 2500,
         },
         {
-            date: new Date('2024-02-01'),
-            productIds: [products[3]._id, products[5]._id],
+            date: new Date('2026-01-08'),
+            productIds: [getProductId(3), getProductId(5)],
             total: 3650,
         },
         {
-            date: new Date('2024-02-15'),
-            productIds: [products[4]._id, products[7]._id],
+            date: new Date('2026-01-08'),
+            productIds: [getProductId(4), getProductId(7)],
             total: 2120,
         },
         {
-            date: new Date('2024-02-20'),
-            productIds: [products[6]._id],
+            date: new Date('2026-01-08'),
+            productIds: [getProductId(6)],
             total: 500,
         },
         {
-            date: new Date('2024-02-28'),
-            productIds: [products[0]._id, products[5]._id],
+            date: new Date('2026-01-08'),
+            productIds: [getProductId(0), getProductId(5)],
             total: 5150,
         },
     ]);

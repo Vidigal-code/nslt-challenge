@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { ProductModule } from './product/product.module';
-import { CategoryModule } from './category/category.module';
-import { OrderModule } from './order/order.module';
-import { DashboardModule } from './dashboard/dashboard.module';
+import { ProductModule } from './product/interfaces/modules/product.module';
+import { CategoryModule } from 'src/category/interfaces/modules/category.module';
+import { OrderModule } from 'src/order/interfaces/modules/order.module';
+import { DashboardModule } from 'src/dashboard/interfaces/modules/dashboard.module';
 import { DatabaseModule } from './database/database.module';
 import { AwsModule } from './aws/aws.module';
 import { APP_GUARD } from '@nestjs/core';

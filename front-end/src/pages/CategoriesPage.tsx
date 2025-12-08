@@ -1,41 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { fetchCategories, deleteCategory } from '../api/Api';
+import React, { useState } from 'react';
 import CategoryTable from '../components/tables/CategoryTable';
 import CategoryForm from '../components/forms/CategoryForm';
 import { Button, CircularProgress, Grid, Box } from '@mui/material';
 import { Category } from '../types/Category';
+import { useCategoriesQuery, useDeleteCategory } from '../shared/api/hooks';
 
 const CategoriesPage: React.FC = () => {
 
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { data: categories = [], isLoading } = useCategoriesQuery();
+    const deleteCategoryMutation = useDeleteCategory();
     const [isFormOpen, setFormOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
-
-    const loadCategories = async () => {
-        setLoading(true);
-        const fetchedCategories = await fetchCategories();
-        setCategories(fetchedCategories);
-        setLoading(false);
-    };
-
-
     const handleDeleteCategory = async (id: string) => {
-        await deleteCategory(id);
-        loadCategories();
+        await deleteCategoryMutation.mutateAsync(id);
     };
-
 
     const handleEditCategory = (category: Category) => {
         setSelectedCategory(category);
         setFormOpen(true);
     };
-
-    useEffect(() => {
-        loadCategories();
-    }, []);
-
 
     return (
         <div>
@@ -69,7 +53,7 @@ const CategoriesPage: React.FC = () => {
                 </Grid>
             </Grid>
 
-            {loading ? (
+            {isLoading ? (
                 <Box display="flex" justifyContent="center" sx={{ p: 0 }}>
                     <CircularProgress />
                 </Box>
@@ -82,7 +66,7 @@ const CategoriesPage: React.FC = () => {
                     />
                     {isFormOpen && (
                         <CategoryForm
-                            onSubmit={loadCategories}
+                            onSubmit={() => setFormOpen(false)}
                             initialData={selectedCategory}
                         />
                     )}

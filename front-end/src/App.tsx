@@ -17,12 +17,15 @@ import ProductsPage from './pages/ProductsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import OrdersPage from './pages/OrdersPage';
 import DashboardPage from "./pages/DashboardPage";
+import { useAppDispatch, useAppSelector } from './shared/lib/hooks';
+import { toggleDrawer as toggleDrawerAction, setDrawer } from './shared/model/ui.slice';
 
 const App = () => {
-    const [drawerOpen, setDrawerOpen] = React.useState(false);
+    const dispatch = useAppDispatch();
+    const drawerOpen = useAppSelector((state) => state.ui.drawerOpen);
 
-    const toggleDrawer = () => {
-        setDrawerOpen(!drawerOpen);
+    const handleToggleDrawer = () => {
+        dispatch(toggleDrawerAction());
     };
 
     const handleMouseEnterTagFooter = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -45,7 +48,7 @@ const App = () => {
                             </Typography>
                             <Button
                                 color="inherit"
-                                onClick={toggleDrawer}
+                                onClick={handleToggleDrawer}
                                 sx={{display: {xs: 'block', sm: 'none'}}}
                             >
                                 Menu
@@ -73,7 +76,7 @@ const App = () => {
                     <Drawer
                         anchor="left"
                         open={drawerOpen}
-                        onClose={toggleDrawer}
+                        onClose={() => dispatch(setDrawer(false))}
                         sx={{
                             display: {xs: 'block', sm: 'none'},
                         }}
@@ -137,7 +140,7 @@ const App = () => {
                             </Typography>
                             <Button
                                 color="inherit"
-                                onClick={toggleDrawer}
+                                onClick={handleToggleDrawer}
                                 sx={{display: {xs: 'block', sm: 'none'}}}
                             >
                                 Menu

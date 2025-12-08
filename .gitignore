@@ -2,3 +2,7 @@
 !.vscode/extensions.json
 .idea/
 .DS_Store
+.env
+back-end/.env
+front-end/.env
+order-notification-lambda/.env

@@ -1,44 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import {fetchOrders, deleteOrder, fetchProducts} from '../api/Api';
+import React, { useState } from 'react';
 import OrderTable from '../components/tables/OrderTable';
 import OrderForm from '../components/forms/OrderForm';
 import { Button, CircularProgress, Grid, Box } from '@mui/material';
 import { Order } from '../types/Order';
+import { useDeleteOrder, useOrdersQuery, useProductsQuery } from '../shared/api/hooks';
 
 const OrdersPage: React.FC = () => {
 
-    const [orders, setOrders] = useState<Order[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { data: orders = [], isLoading } = useOrdersQuery();
+    const { data: products = [] } = useProductsQuery();
+    const deleteOrderMutation = useDeleteOrder();
     const [isFormOpen, setFormOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-    const [allProducts, setAllProducts] = useState<string[]>([]);
-
-    const loadOrders = async () => {
-        setLoading(true);
-        const fetchedOrders = await fetchOrders();
-        setOrders(fetchedOrders);
-        setLoading(false);
-    };
-
-    const loadProducts = async () => {
-        const fetchedProducts = await fetchProducts();
-        setAllProducts(fetchedProducts.map((product: any) => product._id));
-    };
 
     const handleDeleteOrder = async (id: string) => {
-        await deleteOrder(id);
-        loadOrders();
+        await deleteOrderMutation.mutateAsync(id);
     };
 
     const handleEditOrder = (order: Order) => {
         setSelectedOrder(order);
         setFormOpen(true);
     };
-
-    useEffect(() => {
-        loadOrders();
-        loadProducts();
-    }, []);
 
     return (
         <div>
@@ -72,7 +54,7 @@ const OrdersPage: React.FC = () => {
                 </Grid>
             </Grid>
 
-            {loading ? (
+            {isLoading ? (
                 <Box display="flex" justifyContent="center" sx={{ p: 0 }}>
                     <CircularProgress />
                 </Box>
@@ -85,9 +67,9 @@ const OrdersPage: React.FC = () => {
                     />
                     {isFormOpen && (
                         <OrderForm
-                            onSubmit={loadOrders}
+                            onSubmit={() => setFormOpen(false)}
                             initialData={selectedOrder}
-                            allProducts={allProducts}
+                            allProducts={products.map((product: any) => product._id)}
                         />
                     )}
                 </>

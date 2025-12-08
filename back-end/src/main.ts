@@ -4,6 +4,8 @@ import helmet from 'helmet';
 import * as https from 'https';
 import * as fs from 'fs';
 import { ThrottlerFilter } from './filters/throttler.filter';
+import { HttpExceptionInterceptor } from './shared/interceptors/http-exception.interceptor';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import 'src/config';
 const isHttps = process.env.HTTPS === 'true';
@@ -16,6 +18,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     app.useGlobalFilters(new ThrottlerFilter());
+    app.useGlobalInterceptors(new HttpExceptionInterceptor());
 
     app.enableCors({
         origin: API_FRONTEND,
@@ -45,6 +48,15 @@ async function bootstrap() {
             xssFilter: true
         }),
     );
+
+    const config = new DocumentBuilder()
+        .setTitle('NSLT Challenge API')
+        .setDescription('API documentation for products, categories, orders, dashboard, and file uploads')
+        .setVersion('1.0.0')
+        .addBearerAuth()
+        .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, document);
 
     if (isHttps) {
         const httpsOptions = {

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Grid, Box, InputLabel, TextField } from '@mui/material';
-import { createCategory, updateCategory } from '../../api/Api';
 import {CategoryFormProps} from "../../types/interface/Interfaces";
+import { useCreateCategory, useUpdateCategory } from '../../shared/api/hooks';
 
 const CategoryForm: React.FC<CategoryFormProps> = ({ onSubmit, initialData }) => {
 
     const [name, setName] = useState('');
+    const createCategoryMutation = useCreateCategory();
+    const updateCategoryMutation = useUpdateCategory();
 
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -13,7 +15,11 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onSubmit, initialData }) =>
 
         const categoryData = { name };
 
-        await (initialData ? updateCategory(initialData._id, categoryData) : createCategory(categoryData));
+        if (initialData) {
+            await updateCategoryMutation.mutateAsync({ id: initialData._id, payload: categoryData });
+        } else {
+            await createCategoryMutation.mutateAsync(categoryData);
+        }
 
         onSubmit();
     };

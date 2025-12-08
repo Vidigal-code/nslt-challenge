@@ -1,3 +1,5 @@
+import { Errors } from '../shared/errors';
+
 export class CustomError extends Error {
     public statusCode: number;
 
@@ -12,12 +14,12 @@ export class CustomError extends Error {
 export const throwCustomError = (message: string, statusCode: number): never => {
     switch (statusCode) {
         case 403:
-            throw new CustomError(message || 'Forbidden: You do not have permission to access this resource.', 403);
+            throw new CustomError(message || Errors.FORBIDDEN, 403);
         case 404:
-            throw new CustomError(message || 'Not Found: The requested resource could not be found.', 404);
+            throw new CustomError(message || Errors.NOT_FOUND, 404);
         case 500:
-            throw new CustomError(message || 'Internal Server Error: An unexpected error occurred on the server.', 500);
+            throw new CustomError(message || Errors.INTERNAL_ERROR, 500);
         default:
-            throw new CustomError(message || 'An error occurred.', statusCode);
+            throw new CustomError(message || Errors.BAD_REQUEST, statusCode);
     }
 };

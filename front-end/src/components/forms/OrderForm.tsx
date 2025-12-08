@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Grid, Box, InputLabel, TextField } from '@mui/material';
-import { createOrder, updateOrder } from '../../api/Api';
 import { OrderFormProps } from "../../types/interface/Interfaces";
+import { useCreateOrder, useUpdateOrder } from '../../shared/api/hooks';
 
 const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, initialData }) => {
 
     const [productIds, setProductIds] = useState<string[]>([]);
     const [total, setTotal] = useState<number>(1);
     const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
+    const createOrderMutation = useCreateOrder();
+    const updateOrderMutation = useUpdateOrder();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         const orderData = { productIds, total, date };
 
-        await (initialData ? updateOrder(initialData._id, orderData) : createOrder(orderData));
+        if (initialData) {
+            await updateOrderMutation.mutateAsync({ id: initialData._id, payload: orderData });
+        } else {
+            await createOrderMutation.mutateAsync(orderData);
+        }
 
         onSubmit();
     };

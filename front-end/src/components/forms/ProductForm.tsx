@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {Button, Grid, Box, InputLabel, TextField} from '@mui/material';
-import {createProduct, updateProduct} from '../../api/Api';
 import {ALLOWED_MIME_TYPES, ProductFormProps, SIZE_VALUE_IMG, SIZE_VALUE_IMG_CALC} from "../../types/interface/Interfaces";
+import { useCreateProduct, useUpdateProduct } from '../../shared/api/hooks';
 
 const ProductForm: React.FC<ProductFormProps> = ({onSubmit, initialData}) => {
 
@@ -12,6 +12,8 @@ const ProductForm: React.FC<ProductFormProps> = ({onSubmit, initialData}) => {
     const [image, setImage] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const createProductMutation = useCreateProduct();
+    const updateProductMutation = useUpdateProduct();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,7 +26,11 @@ const ProductForm: React.FC<ProductFormProps> = ({onSubmit, initialData}) => {
 
         if (image) formData.append('image', image);
 
-        await (initialData ? updateProduct(initialData._id, formData) : createProduct(formData));
+        if (initialData) {
+            await updateProductMutation.mutateAsync({ id: initialData._id, payload: formData });
+        } else {
+            await createProductMutation.mutateAsync(formData);
+        }
 
         onSubmit();
     };

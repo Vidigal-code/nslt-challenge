@@ -22,8 +22,10 @@ WORKDIR /app
 # Copy the entire project files into the container's working directory
 COPY . .
 
-# Make the entrypoint script executable
-RUN chmod +x ./entrypoint.sh
+# Normalize line endings and make entrypoint executable
+RUN sed -i 's/\r$//' ./entrypoint.sh && \
+    sed -i 's/\r$//' ./serverless.yml || true && \
+    chmod +x ./entrypoint.sh
 
 # Install project dependencies, forcing npm to resolve any conflicts
 RUN npm install --force
@@ -31,5 +33,5 @@ RUN npm install --force
 # Expose port 4000 for serverless-offline to listen on
 EXPOSE 4000
 
-# Default command to run when the container starts
-CMD ["./entrypoint.sh"]
+# Default command to run when the container starts (bash needed for pipefail)
+ENTRYPOINT ["bash", "./entrypoint.sh"]

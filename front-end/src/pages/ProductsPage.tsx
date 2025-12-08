@@ -1,43 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { fetchProducts, deleteProduct } from '../api/Api';
+import React, { useState } from 'react';
 import ProductTable from '../components/tables/ProductTable';
 import ProductForm from '../components/forms/ProductForm';
 import { Button, CircularProgress, Grid, Box } from '@mui/material';
 import { Product } from '../types/Product';
+import { useDeleteProduct, useProductsQuery } from '../shared/api/hooks';
 
 const ProductsPage: React.FC = () => {
 
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { data: products = [], isLoading } = useProductsQuery();
+    const deleteProductMutation = useDeleteProduct();
     const [isFormOpen, setFormOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-
-    const loadProducts = async () => {
-        setLoading(true);
-        const fetchedProducts = await fetchProducts();
-        setProducts(fetchedProducts);
-        setLoading(false);
-    };
-
-
     const handleDeleteProduct = async (id: string) => {
-        await deleteProduct(id);
-        loadProducts();
+        await deleteProductMutation.mutateAsync(id);
     };
-
 
     const handleEditProduct = (product: Product) => {
         setSelectedProduct(product);
         setFormOpen(true);
     };
-
-
-
-    useEffect(() => {
-        loadProducts();
-    }, []);
-
 
     return (
         <div>
@@ -71,7 +53,7 @@ const ProductsPage: React.FC = () => {
                 </Grid>
             </Grid>
 
-            {loading ? (
+            {isLoading ? (
                 <Box display="flex" justifyContent="center" sx={{ p: 0 }}>
                     <CircularProgress />
                 </Box>
@@ -84,7 +66,7 @@ const ProductsPage: React.FC = () => {
                     />
                     {isFormOpen && (
                         <ProductForm
-                            onSubmit={loadProducts}
+                            onSubmit={() => setFormOpen(false)}
                             initialData={selectedProduct}
                         />
                     )}

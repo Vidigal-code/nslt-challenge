@@ -14,18 +14,9 @@ provider:
     AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
     AWS_REGION: ${env:AWS_REGION}
 
-# Serverless 4.x native configuration for TypeScript
-build:
-  esbuild:
-    bundle: true
-    minify: false
-    target: node20
-    exclude:
-      - aws-sdk
-
 functions:
   sendOrderNotification:
-    handler: src/handler.sendOrderNotification
+    handler: src/main.sendOrderNotification
     timeout: 30  # Timeout específico para esta função
     events:
       - http:
@@ -34,7 +25,7 @@ functions:
           cors: false
 
   processSalesReport:
-    handler: src/handler.processSalesReport
+    handler: src/main.processSalesReport
     timeout: 30  # Timeout específico para esta função
     events:
       # Runs daily at 9am UTC
@@ -46,10 +37,17 @@ functions:
           cors: false
 
 plugins:
-  - serverless-dotenv-plugin
+  - serverless-esbuild
   - serverless-offline
 
 custom:
+  esbuild:
+    bundle: true
+    minify: false
+    target: node20
+    sourcemap: true
+    exclude:
+      - aws-sdk
   serverless-offline:
     host: 0.0.0.0
     httpPort: 4000

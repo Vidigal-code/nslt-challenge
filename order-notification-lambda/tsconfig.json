@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "src/handler.ts",
+    "src/main.ts",
     "src/models/order.ts"
   ],
   "exclude": [

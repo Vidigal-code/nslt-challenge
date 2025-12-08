@@ -19,10 +19,11 @@ import { AwsException, handleAwsError } from "../exception/aws.exception";
 import { handleErrorMessageCustom } from "../exception/exception.handle";
 import ImageValidator from "../types/image.validator";
 import 'src/config';
+import { ImageStoragePort } from '../domain/ports/image-storage.port';
 
 
 @Injectable()
-export class AwsService {
+export class AwsService implements ImageStoragePort {
 
     private s3: S3Client;
 
@@ -64,19 +65,19 @@ export class AwsService {
             });
     }
 
-    async createBucketIfNotExists() {
+    async createBucketIfNotExists(): Promise<void> {
         const params = {Bucket: 'my-bucket'};
 
-        return this.s3.send(new CreateBucketCommand(params))
+        await this.s3.send(new CreateBucketCommand(params))
             .catch((error) => {
                 handleAwsError(error, 'Creating bucket');
             });
     }
 
-    async deleteImage(imageUrl: string) {
+    async deleteImage(imageUrl: string): Promise<void> {
         const imageKey = imageUrl.split('/').pop();
         if (imageKey) {
-            return this.s3.send(new DeleteObjectCommand({Bucket: 'my-bucket', Key: imageKey}))
+            await this.s3.send(new DeleteObjectCommand({Bucket: 'my-bucket', Key: imageKey}))
                 .catch((error) => {
                     handleAwsError(error, 'Deleting image from S3');
                 });

@@ -1,341 +1,75 @@
-# Backend Specification (NestJS + MongoDB)
+# Backend (NestJS + MongoDB + CQRS)
 
-## Version: 3.0.1 (02/01/24)
+This service implements the REST API required by the challenge using **NestJS 11**, **MongoDB**, and **LocalStack/S3** for file handling. The codebase follows a layered structure (DDD + Hexagonal + CQRS) and is fully covered by unit and integration (e2e) tests.
+
+## Stack & Features
+
+- CQRS handlers for Products, Categories, Orders, Dashboard.
+- Mongo repositories implemented as adapters (see `src/**/infrastructure`).
+- Ports for S3 image storage and order notification (lambda HTTP client).
+- DTO validation (class-validator), centralized errors, and Swagger docs at `/docs`.
+- Seed script (`pnpm migrate`) populates Mongo with sample catalog data.
+- Tests: Jest unit specs + Supertest e2e suite backed by mongodb-memory-server.
+
+## Project Structure
+
+```
+src/
+ ├── app.module.ts
+ ├── domain/                # ports, repositories, tokens
+ ├── product|category|order/
+ │     ├── application/      # commands, queries, handlers, services (use-cases)
+ │     ├── interfaces/       # http controllers + swagger decorators
+ │     └── infrastructure/   # mongo repositories, adapters
+ ├── dashboard/              # dashboard CQRS + aggregation pipeline
+ ├── aws/                    # S3 adapter (implements ImageStoragePort)
+ └── shared/                 # error/success messages, interceptors
+```
+
+## Local Commands
 
 ```bash
-docker run -d --name localstack -p 4566:4566 -e DOCKER_HOST=unix:///var/run/docker.sock -e SERVICES=sns,s3,sts -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd)/tmp/localstack:/var/lib/localstack --network localstack-network localstack/localstack:latest
+pnpm install
+pnpm start:dev      # start Nest API with watch
+pnpm migrate        # seed Mongo with categories/products/orders
+pnpm test           # unit tests (ts-jest)
+pnpm test:e2e       # e2e tests (Supertest + mongodb-memory-server)
+pnpm lint           # eslint
 ```
+
+Swagger is automatically available once the app is running: `http://localhost:3000/docs`.
+
+## Environment Variables
+
+The service reads the root `.env` file created from `env.example.txt`. Important keys:
+
+| Variable | Purpose |
+| --- | --- |
+| `MONGO_URI` | connection string (Docker Compose sets this to the `mongo` container) |
+| `S3_ENDPOINT`, `S3_ENDPOINT_HOST_MY_BUCKET`, `AWS_*` | LocalStack S3 configuration |
+| `API_LAMBDA` | URL for the order notification lambda |
+
+When running inside Docker Compose the `mongo`, `localstack`, and `localstack-lambda-app` hostnames are already resolvable (see `docker-compose.yml`).
+
+## Testing Strategy
+
+| Layer | Command | Notes |
+| --- | --- | --- |
+| Unit | `pnpm test` | tests services/handlers with mocked ports |
+| Integration (e2e) | `pnpm test:e2e` | boots AppModule + in-memory Mongo; exercises HTTP endpoints for products, categories, orders |
+
+## Seed Script
+
+```
+pnpm migrate
+```
+
+Populates Mongo with sample categories, products (with category references), and orders. Useful for demo data in the dashboard and frontend.
+
+## CI
+
+The root GitHub Actions workflow (`.github/workflows/ci.yml`) executes `pnpm test && pnpm test:e2e` for this package on every push/PR. Secrets (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `MONGO_URI`) can be provided but default to local/test values so the pipeline works out-of-the-box.
 
 ---
 
-### Back-end `.env` File
-
-For a back-end application, such as an Express server, environment variables help configure important services, ports, and other server-related settings.
-
-**Example of a Back-end `.env` file:**
-
-
-```bash
-HOST=localhost
-PORT=3000
-HTTPS=false
-API_FRONTEND=http://localhost:5173
-AWS_REGION=us-east-1
-S3_ENDPOINT=http://localhost:4566
-S3_ENDPOINT_HOST_MY_BUCKET=http://localhost:4566
-AWS_ACCESS_KEY_ID=test
-AWS_SECRET_ACCESS_KEY=test
-MONGO_URI=mongodb://127.0.0.1:27017/nouslatam
-API_LAMBDA=http://localhost:4000/dev/order/notification
-```
-
----
-
-### Explanation of Environment Variables Inside a Container
-
-When running a back-end application like an Express server **inside a Docker container**, the values of certain environment variables need to reflect the internal Docker network. Instead of using `localhost`, you reference other services by their **container names** defined in `docker-compose.yml`.
-
-Here’s how the `.env` file would look **inside the container**:
-
-```env
-HOST=localhost
-PORT=3000
-HTTPS=false
-API_FRONTEND=http://localhost:5173
-AWS_REGION=us-east-1
-S3_ENDPOINT=http://localstack:4566
-S3_ENDPOINT_HOST_MY_BUCKET=http://localhost:4566
-AWS_ACCESS_KEY_ID=test
-AWS_SECRET_ACCESS_KEY=test
-MONGO_URI=mongodb://mongo:27017/nouslatam
-API_LAMBDA=http://localstack-lambda-app:4000/dev/order/notification
-```
-
-### Key Differences:
-
-* `S3_ENDPOINT=http://localstack:4566`
-  → Uses the container name `localstack` instead of `localhost`, because that's how it's accessed from within the Docker network.
-
-* `MONGO_URI=mongodb://mongo:27017/nouslatam`
-  → The hostname `mongo` refers to the MongoDB container, not the local machine.
-
-* `API_LAMBDA=http://localstack-lambda-app:4000/dev/order/notification`
-  → Refers to another container named `localstack-lambda-app`.
-
-Using container names allows the services to correctly locate and communicate with each other **within the isolated Docker network**.
-
----
-
-### Environment Variables
-
-* **HOST:** Defines the hostname or IP address on which the back-end server will listen. In this example, it’s set to `localhost`, meaning the server will only be accessible from the same machine it’s running on.
-* **PORT:** Specifies the port on which the back-end server will listen. Here, it’s set to `3000`.
-* **HTTPS:** Indicates whether the server should use HTTPS. In this case, it’s set to `false` (non-HTTPS).
-* **API_FRONTEND:** Specifies the URL of the front-end application. In this example, it points to the local development server (e.g., `http://localhost:5173`).
-* **AWS_REGION:** Defines the AWS region where services (like S3 or Lambda) are configured. In this case, it's set to `us-east-1`.
-* **S3_ENDPOINT:** Sets the endpoint for AWS S3. When using a mock service like LocalStack, this typically points to a local address (e.g., `http://localhost:4566`).
-* **S3_ENDPOINT_HOST_MY_BUCKET:** Defines the host-style endpoint for accessing an S3 bucket, often used when running a local mock like LocalStack. For example, this might be `http://localhost:4566` to simulate access to `http://localhost:4566/my-bucket/`.
-* **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY:** Represent the AWS credentials required to authenticate with AWS services. For local development, dummy values are typically sufficient.
-* **MONGO_URI:** Specifies the MongoDB connection string. In this case, it connects to a local MongoDB instance (e.g., `mongodb://127.0.0.1:27017/nouslatam`).
-* **API_LAMBDA:** Specifies the URL endpoint for invoking a Lambda-like service (such as one running on LocalStack). For example, `http://localhost:4000/dev/order/notification` points to a locally hosted server that simulates a Lambda function.
-
----
-
-### Steps to Create a `.env` File
-
-1. **Create the file:**
-   - In the root directory of your project, create a new file named `.env` (without any file extension).
-
-2. **Add your variables:**
-   - Open the `.env` file in a text editor and add your environment variables in the `KEY=VALUE` format. Ensure each key-value pair is on its own line.
-
-3. **Use the variables in your code:**
-   - In the application code, you can access the environment variables using `process.env.KEY_NAME`. For example, in Node.js:
-
-   ```javascript
-   const apiUrl = process.env.VITE_API_URL;
-   ```
-
-4. **Never commit the `.env` file to source control (Git):**
-   - The `.env` file often contains sensitive information. Make sure to add it to your `.gitignore` file to prevent it from being committed to version control.
-
-   ```bash
-   # .gitignore
-   .env
-   ```
-
----
-
-Sure! Here's the explanation for each script in your `package.json` file in Markdown format.
-
-```markdown
-# Scripts in `package.json`
-
-Here are the detailed explanations for each script defined in the `package.json` file.
-
-## 1. `prebuild`
-```bash
-"prebuild": "rimraf dist"
-```
-- **What it does:** Before the build process starts, the `prebuild` script runs the `rimraf dist` command, which deletes the `dist` folder (where the transpiled code is stored). This ensures that you always start with a clean version of the `dist` directory.
-
-## 2. `build`
-```bash
-"build": "nest build"
-```
-- **What it does:** This script runs the `nest build` command to compile the NestJS application. It transpiles TypeScript files into JavaScript and prepares the project for production or running.
-
-## 3. `start`
-```bash
-"start": "nest start"
-```
-- **What it does:** This script starts the NestJS application in development mode. It executes the `nest start` command, which will run the application without watching for file changes.
-
-## 4. `start:dev`
-```bash
-"start:dev": "nest start --watch"
-```
-- **What it does:** This script runs the NestJS application in development mode with the `--watch` flag. It watches for changes in the source files and automatically reloads the application when changes are detected. It's useful for active development.
-
-## 5. `start:prod`
-```bash
-"start:prod": "node dist/main"
-```
-- **What it does:** This script starts the application in production mode. It runs the `node dist/main` command, which starts the precompiled application (from the `dist` folder) in a production environment.
-
-## 6. `lint`
-```bash
-"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
-```
-- **What it does:** This script runs ESLint to lint the TypeScript files in the `src`, `apps`, `libs`, and `test` directories. The `--fix` flag automatically fixes fixable linting issues in the code.
-
-## 7. `test`
-```bash
-"test": "jest"
-```
-- **What it does:** This script runs Jest to execute unit tests. It will find and run all the test files in the project based on the default Jest configuration.
-
-## 8. `test:watch`
-```bash
-"test:watch": "jest --watch"
-```
-- **What it does:** This script runs Jest in watch mode. Jest will watch for file changes and re-run the tests automatically whenever a change is made to the codebase.
-
-## 9. `test:cov`
-```bash
-"test:cov": "jest --coverage"
-```
-- **What it does:** This script runs Jest and generates a code coverage report. It will track which lines of code are covered by tests and output a report indicating the coverage percentage.
-
-## 10. `test:debug`
-```bash
-"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
-```
-- **What it does:** This script runs Jest in debug mode. The `--inspect-brk` flag allows you to debug the test process with the Node.js debugger. The `--runInBand` option ensures Jest runs tests serially, rather than in parallel, which is often required when debugging. Additionally, `ts-node/register` is used to transpile TypeScript files on the fly during testing.
-
-## 11. `test:e2e`
-```bash
-"test:e2e": "jest --config ./test/jest-e2e.json"
-```
-- **What it does:** This script runs end-to-end (E2E) tests using Jest, but with a specific configuration file (`jest-e2e.json`). E2E tests are typically used to test the application as a whole, ensuring all components work together as expected.
-
-## 12. `migrate`
-```bash
-"migrate": "ts-node scripts/migrate.ts"
-```
-- **What it does:** This script runs a TypeScript migration script (`migrate.ts`). It uses `ts-node` to execute TypeScript code directly, which is useful for running database migrations or other scripts in a TypeScript-based project.
-```
-
-This markdown breakdown should give you a good understanding of each script and its purpose! Let me know if you need further details.
-
-### 1.1. Entities
-
-#### 1.1.1. Product
-
-Example fields:
-
-- `id` (string or ObjectId)
-- `name` (string)
-- `description` (string)
-- `price` (number)
-- `categoryIds` (array of IDs) — many-to-many relationship with Category
-- `imageUrl` (string) — pointing to the file in S3
-
-```typescript
-import { ObjectId } from 'mongoose';
-
-export class Product {
-  id: ObjectId;
-  name: string;
-  description: string;
-  price: number;
-  categoryIds: ObjectId[];
-  imageUrl: string;
-}
-```
-
-#### 1.1.2. Category
-
-Example fields:
-
-- `id` (string or ObjectId)
-- `name` (string)
-
-```typescript
-import { ObjectId } from 'mongoose';
-
-export class Category {
-  id: ObjectId;
-  name: string;
-}
-```
-
-#### 1.1.3. Order
-
-Example fields:
-
-- `id` (string or ObjectId)
-- `date` (Date)
-- `productIds` (array of Product IDs)
-- `total` (number)
-
-```typescript
-import { ObjectId } from 'mongoose';
-
-export class Order {
-  id: ObjectId;
-  date: Date;
-  productIds: ObjectId[];
-  total: number;
-}
-```
-
-**Note:**  
-The relationship between Product and Category is many-to-many.
-- Each Product can belong to multiple Categories.
-- Each Category can contain multiple Products.  
-  The relationship between Product and Order is many-to-one (one order can contain many products).
-
----
-
-### 1.2. Endpoints
-
-#### 1.2.1. CRUD Operations for Each Entity
-
-- **Product:**
-  - `POST /products` — Create a new product
-  - `GET /products` — List all products
-  - `PUT /products/:id` — Update a product by ID
-  - `DELETE /products/:id` — Delete a product by ID
-
-- **Category:**
-  - `POST /categories` — Create a new category
-  - `GET /categories` — List all categories
-  - `PUT /categories/:id` — Update a category by ID
-  - `DELETE /categories/:id` — Delete a category by ID
-
-- **Order:**
-  - `POST /orders` — Create a new order
-  - `GET /orders` — List all orders
-  - `PUT /orders/:id` — Update an order by ID
-  - `DELETE /orders/:id` — Delete an order by ID
-
-- **Dashboard:**
-  - `GET /dashboard` — Display aggregated sales data with filters by category, product, and period.  
-    **Implement aggregate queries** to obtain order metrics:
-  - Total Orders
-  - Average Order Value
-  - Total Sales by Product
-  - Total Sales by Category
-  - Average Order Total
-
----
-
-### 1.3. Relationships
-
-- **Product and Category:**
-  - Many-to-many relationship.
-  - Implement a join table or embedded references to associate Products with Categories. A product can belong to multiple categories, and a category can contain multiple products.
-
-- **Product and Order:**
-  - Many-to-one relationship.
-  - A product can be part of many orders. Use an array of product IDs to represent this in the Order entity.
-
----
-
-### 1.4. Mass Data Script
-
-- **Create a script (CLI in Node.js)** that populates the database with fictitious data:
-  - **Products**: Populate with price and category variations.
-  - **Categories**: Populate with different types of categories (e.g., Electronics, Fashion, Groceries).
-  - **Orders**: Populate with various combinations of products, dates, and totals.
-
----
-
-### 1.5. Validations
-
-- **DTOs for Each Route**:  
-  Use **DTOs** (Data Transfer Objects) for validation to ensure data integrity and security.
-
-- **Correctly Manage Deletions**:  
-  When deleting a Category, ensure that products are either:
-  - Removed from the database if they are orphaned,
-  - Or their `categoryIds` are updated to remove the reference to the deleted Category.
-
-- **Error Handling**:  
-  Ensure that error handling is consistent and clear. Return:
-  - Adequate HTTP status codes (e.g., 200 for success, 400 for bad requests, 404 for not found, etc.).
-  - A standardized JSON error response with an appropriate message.
-
-Example of an error response:
-
-```json
-{
-  "statusCode": 400,
-  "message": "Product not found",
-  "error": "Bad Request"
-}
-```
-
---- 
-
+For high-level documentation of the entire stack, see the repository root `README.md`.
