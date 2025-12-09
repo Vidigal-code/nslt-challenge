@@ -46,6 +46,9 @@ This repository contains the complete solution for the NSLT challenge: a full-st
    - Backend API & Swagger: http://localhost:3000 / http://localhost:3000/docs  
    - Lambda (serverless-offline): http://localhost:4000  
    - LocalStack: http://localhost:4566
+  
+     <img src="./example/docker-desktop-containers.png" alt="" width="800"/> 
+
 
 3. **Manual runs (optional)**:
 
