@@ -11,7 +11,11 @@ apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
         const message = error?.response?.data?.message || error.message || 'Unexpected error';
-        return Promise.reject(new Error(message));
+        const wrapped = new Error(message);
+        if (error?.response) {
+            (wrapped as any).response = error.response;
+        }
+        return Promise.reject(wrapped);
     }
 );
 

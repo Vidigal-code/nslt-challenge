@@ -53,11 +53,27 @@ export const useDeleteProduct = () => {
     const qc = useQueryClient();
     return useMutation({
         mutationFn: async (id: string) => {
-            await apiClient.delete(`/products/${id}`);
-            return id;
+            try {
+                await apiClient.delete(`/products/${id}`);
+                return id;
+            } catch (error: any) {
+                const rawMsg = error?.response?.data?.message || error?.message;
+                const msg = Array.isArray(rawMsg) ? rawMsg.join(' ') : String(rawMsg || '');
+                const isImageKeyError = msg.toLowerCase().includes('invalid image url or key');
+                const status = error?.response?.status;
+
+                if ((status === 500 || !status) && isImageKeyError) {
+                    console.warn('Image deletion failed but product was deleted:', msg);
+                    return id;
+                }
+                throw error;
+            }
         },
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: PRODUCTS_KEY });
+        },
+        onError: (error: any) => {
+            console.error('Error deleting product:', error);
         },
     });
 };

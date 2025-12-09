@@ -12,8 +12,9 @@ RUN npm install --force
 # Copy the rest of the source code
 COPY . .
 
-# Expose the default Vite port (3000)
-EXPOSE 3000
+# Expose development ports: Vite (5173) and Storybook (6007)
+EXPOSE 5173
+EXPOSE 6007
 
-# Command to run the Vite development server
+# Command to run the Vite development server by default
 CMD ["npm", "run", "dev"]

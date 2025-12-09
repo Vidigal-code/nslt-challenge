@@ -21,7 +21,7 @@ pnpm install
 pnpm dev            # Vite dev server on http://localhost:5173
 pnpm build          # production build
 pnpm serve          # preview the build
-pnpm storybook      # Storybook on http://localhost:6006
+pnpm storybook      # Storybook on http://localhost:6007 (cache cleaned, no manager cache)
 pnpm build-storybook
 pnpm test           # Jest + React Testing Library
 ```
@@ -47,6 +47,8 @@ Copy it to `front-end/.env` or rely on the root `.env` provided by Docker Compos
 - **Categories** & **Orders**: CRUD flows equal to the backend requirements.
 - **Dashboard**: KPI cards + charts (Recharts) with filters for product, category, date range, and aggregation period (daily/weekly/monthly).
 - **Storybook**: tables and forms documented for handoff (`pnpm storybook`).
+
+> Tip: The Storybook script now wipes stale caches and disables the manager cache to avoid "Loading chunk ... failed" errors. If you still see it, rerun `pnpm storybook` so it rebuilds fresh.
 
 ## Testing & CI
 

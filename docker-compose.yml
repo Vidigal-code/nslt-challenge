@@ -45,6 +45,23 @@ services:
     depends_on:
       - backend  # Ensure backend starts before frontend
 
+  # Storybook for frontend components
+  storybook:
+    build:
+      context: ./front-end
+    container_name: storybook-nslt-challenge
+    command: ["npm", "run", "storybook", "--", "--host", "0.0.0.0", "--port", "6007"]
+    ports:
+      - "6007:6007"  # Expose Storybook
+    env_file:
+      - .env
+    environment:
+      - BROWSER=none
+    networks:
+      - app-network
+    depends_on:
+      - backend  # Storybook may call the API; ensure backend is up
+
   # LocalStack to simulate AWS services
   localstack:
     image: localstack/localstack:latest

@@ -1,24 +1,35 @@
-import React, {useState, useEffect} from 'react';
+/**
+ *
+ * 3.3. Component Documentation
+ * • Use Storybook to document at least 2 main components. Examples:
+ * • Table (for listing Products, Orders or Categories).
+ * • Form (for creating/editing).
+ *
+ */
+import React, { useState } from 'react';
 import {
-    Grid,
     Box,
     Card,
     CardContent,
     Typography,
     TextField,
-    MenuItem,
     CircularProgress,
     Select,
     SelectChangeEvent,
-    Button, Divider, InputLabel, Chip,
+    Button, 
+    Divider, 
+    InputLabel, 
+    Chip,
     FormControl,
     Fade,
     Container,
     Grow,
-    Paper
+    Paper,
+    useTheme,
+    MenuItem,
 } from '@mui/material';
-import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Bar, BarChart} from 'recharts';
-import {DashboardResponse, DashboardChartItem} from "../types/interface/Interfaces";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Bar, BarChart } from 'recharts';
+import { DashboardChartItem } from "../types/interface/Interfaces";
 import {
     FilterList,
     Clear,
@@ -34,6 +45,9 @@ import { useDashboardQuery } from '../shared/api/hooks';
 
 const DashboardPage = () => {
 
+    const theme = useTheme();
+
+
     const [filters, setFilters] = useState({
         category: '',
         product: '',
@@ -41,6 +55,7 @@ const DashboardPage = () => {
         end: '',
         period: 'daily'
     });
+
     const { data, isFetching, refetch } = useDashboardQuery(filters);
 
     const handleFilterChange = (field: string) => (
@@ -114,27 +129,37 @@ const DashboardPage = () => {
     };
 
     const modernCardStyle = {
-        background: '#ffffff',
-        border: '1px solid #f0f0f0',
         borderRadius: '16px',
-        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.04)',
+        boxShadow: theme.palette.mode === 'dark' 
+            ? '0 4px 24px rgba(0, 0, 0, 0.5)'
+            : '0 4px 24px rgba(0, 0, 0, 0.04)',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        backgroundColor: 'background.paper',
+        border: `1px solid ${theme.palette.divider}`,
         '&:hover': {
-            boxShadow: '0 8px 40px rgba(0, 0, 0, 0.12)',
+            boxShadow: theme.palette.mode === 'dark'
+                ? '0 8px 40px rgba(0, 0, 0, 0.7)'
+                : '0 8px 40px rgba(0, 0, 0, 0.12)',
             transform: 'translateY(-2px)',
         }
     };
 
     const kpiCardStyle = {
-        background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-        border: '1px solid #e9ecef',
+        background: theme.palette.mode === 'dark'
+            ? 'linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%)'
+            : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+        border: `1px solid ${theme.palette.divider}`,
         borderRadius: '20px',
-        boxShadow: '0 2px 16px rgba(0, 0, 0, 0.06)',
+        boxShadow: theme.palette.mode === 'dark'
+            ? '0 2px 16px rgba(0, 0, 0, 0.5)'
+            : '0 2px 16px rgba(0, 0, 0, 0.06)',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         overflow: 'hidden',
         position: 'relative',
         '&:hover': {
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+            boxShadow: theme.palette.mode === 'dark'
+                ? '0 8px 32px rgba(0, 0, 0, 0.7)'
+                : '0 8px 32px rgba(0, 0, 0, 0.12)',
             transform: 'translateY(-4px)',
         },
         '&::before': {
@@ -144,86 +169,84 @@ const DashboardPage = () => {
             left: 0,
             right: 0,
             height: '4px',
-            background: 'linear-gradient(90deg, #000000 0%, #333333 100%)',
+            background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
         }
     };
 
     const textFieldStyle = {
         '& .MuiOutlinedInput-root': {
             borderRadius: '12px',
-            backgroundColor: '#ffffff',
-            border: '1px solid #e9ecef',
+            backgroundColor: 'background.paper',
+            border: `1px solid ${theme.palette.divider}`,
             transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             '& fieldset': {
                 border: 'none',
             },
             '&:hover': {
-                backgroundColor: '#ffffff',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-                border: '1px solid #dee2e6',
+                backgroundColor: 'background.paper',
+                boxShadow: theme.palette.mode === 'dark'
+                    ? '0 2px 8px rgba(0, 0, 0, 0.5)'
+                    : '0 2px 8px rgba(0, 0, 0, 0.08)',
+                border: `1px solid ${theme.palette.primary.main}`,
             },
             '&.Mui-focused': {
-                backgroundColor: '#ffffff',
-                boxShadow: '0 0 0 3px rgba(0, 0, 0, 0.1)',
-                border: '1px solid #000000',
+                backgroundColor: 'background.paper',
+                boxShadow: theme.palette.mode === 'dark'
+                    ? `0 0 0 3px ${theme.palette.primary.main}40`
+                    : `0 0 0 3px ${theme.palette.primary.main}20`,
+                border: `1px solid ${theme.palette.primary.main}`,
             }
         },
         '& .MuiInputLabel-root': {
             fontWeight: 500,
-            color: '#495057',
+            color: 'text.secondary',
             '&.Mui-focused': {
-                color: '#000000',
+                color: 'primary.main',
             }
         }
     };
 
     const selectStyle = {
         borderRadius: '12px',
-        backgroundColor: '#ffffff',
-        border: '1px solid #e9ecef',
+        backgroundColor: 'background.paper',
+        border: `1px solid ${theme.palette.divider}`,
         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
         '& .MuiOutlinedInput-notchedOutline': {
             border: 'none',
         },
         '&:hover': {
-            backgroundColor: '#ffffff',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-            border: '1px solid #dee2e6',
+            backgroundColor: 'background.paper',
+            boxShadow: theme.palette.mode === 'dark'
+                ? '0 2px 8px rgba(0, 0, 0, 0.5)'
+                : '0 2px 8px rgba(0, 0, 0, 0.08)',
+            border: `1px solid ${theme.palette.primary.main}`,
         },
         '&.Mui-focused': {
-            backgroundColor: '#ffffff',
-            boxShadow: '0 0 0 3px rgba(0, 0, 0, 0.1)',
-            border: '1px solid #000000',
+            backgroundColor: 'background.paper',
+            boxShadow: theme.palette.mode === 'dark'
+                ? `0 0 0 3px ${theme.palette.primary.main}40`
+                : `0 0 0 3px ${theme.palette.primary.main}20`,
+            border: `1px solid ${theme.palette.primary.main}`,
         }
     };
 
     const primaryButtonStyle = {
-        background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-        color: '#ffffff',
         borderRadius: '12px',
         fontWeight: 600,
         textTransform: 'none',
         fontSize: '14px',
         padding: '12px 24px',
-        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
-        border: 'none',
-        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+        boxShadow: 3,
         '&:hover': {
-            background: 'linear-gradient(135deg, #1a1a1a 0%, #333333 100%)',
-            boxShadow: '0 6px 24px rgba(0, 0, 0, 0.3)',
+            boxShadow: 6,
             transform: 'translateY(-1px)',
         },
-        '&:disabled': {
-            background: '#6c757d',
-            color: '#fff',
-            boxShadow: 'none'
-        }
     };
 
     const secondaryButtonStyle = {
         background: 'transparent',
-        color: '#000000',
-        border: '2px solid #000000',
+        color: 'primary.main',
+        border: `2px solid ${theme.palette.primary.main}`,
         borderRadius: '12px',
         fontWeight: 600,
         textTransform: 'none',
@@ -231,44 +254,42 @@ const DashboardPage = () => {
         padding: '10px 24px',
         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
         '&:hover': {
-            background: '#000000',
-            color: '#ffffff',
+            background: 'primary.main',
+            color: theme.palette.mode === 'dark' ? '#000' : '#fff',
             transform: 'translateY(-1px)',
         },
-        '&:disabled': {
-            border: '2px solid #6c757d',
-            color: '#6c757d'
-        }
     };
 
     const chipStyle = {
         borderRadius: '8px',
-        border: '1px solid #000000',
-        color: '#000000',
+        border: `1px solid ${theme.palette.primary.main}`,
+        color: 'primary.main',
         backgroundColor: 'transparent',
         fontWeight: 500,
         '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.04)',
+            backgroundColor: theme.palette.mode === 'dark'
+                ? 'rgba(144, 202, 249, 0.08)'
+                : 'rgba(25, 118, 210, 0.04)',
         }
     };
 
     return (
         <Box sx={{
             minHeight: '100vh',
-            backgroundColor: 'none',
-            py: 4
+            backgroundColor: 'background.default',
+            py: { xs: 2, md: 4 }
         }}>
             <Container maxWidth="xl">
                 <Fade in timeout={800}>
                     <Paper sx={{
                         ...modernCardStyle,
                         mb: 4,
-                        background: 'none',
-                        border: 'none',
-                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)'
+                        boxShadow: theme.palette.mode === 'dark'
+                            ? '0 8px 32px rgba(0, 0, 0, 0.5)'
+                            : '0 8px 32px rgba(0, 0, 0, 0.08)'
                     }}>
-                        <CardContent sx={{p: 4}}>
-                            <Box sx={{textAlign: 'center', mb: 3}}>
+                        <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+                            <Box sx={{ textAlign: 'center', mb: 3 }}>
                                 <Box sx={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -276,16 +297,13 @@ const DashboardPage = () => {
                                     mb: 2,
                                     gap: 2
                                 }}>
-                                    <Analytics sx={{fontSize: 40, color: '#000000'}}/>
+                                    <Analytics sx={{ fontSize: 40, color: 'primary.main' }} />
                                     <Typography
                                         variant="h3"
                                         sx={{
                                             fontWeight: 800,
-                                            background: 'linear-gradient(45deg, #000000 30%, #333333 90%)',
-                                            backgroundClip: 'text',
-                                            WebkitBackgroundClip: 'text',
-                                            WebkitTextFillColor: 'transparent',
-                                            fontSize: {xs: '2rem', sm: '2.5rem', md: '3rem'}
+                                            color: 'text.primary',
+                                            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }
                                         }}
                                     >
                                         Sales Dashboard
@@ -294,7 +312,7 @@ const DashboardPage = () => {
                                 <Typography
                                     variant="h6"
                                     sx={{
-                                        color: '#6c757d',
+                                        color: 'text.secondary',
                                         fontWeight: 400,
                                         maxWidth: '600px',
                                         mx: 'auto'
@@ -306,27 +324,35 @@ const DashboardPage = () => {
 
                             <Divider sx={{
                                 mb: 4,
-                                background: 'linear-gradient(90deg, transparent, #000000, transparent)',
+                                background: `linear-gradient(90deg, transparent, ${theme.palette.primary.main}, transparent)`,
                                 height: '2px',
                                 border: 'none'
-                            }}/>
+                            }} />
 
                             <Box sx={{mb: 3}}>
                                 <Box sx={{display: 'flex', alignItems: 'center', mb: 3}}>
-                                    <FilterList sx={{mr: 1, color: '#000000'}}/>
+                                    <FilterList sx={{mr: 1, color: 'primary.main'}}/>
                                     <Typography
                                         variant="h5"
                                         sx={{
                                             fontWeight: 700,
-                                            color: '#000000'
+                                            color: 'text.primary'
                                         }}
                                     >
                                         Filters & Controls
                                     </Typography>
                                 </Box>
 
-                                <Grid container spacing={3}>
-                                    <Grid>
+                                <Box sx={{ 
+                                    display: 'grid',
+                                    gridTemplateColumns: {
+                                        xs: '1fr',
+                                        sm: 'repeat(2, 1fr)',
+                                        md: 'repeat(3, 1fr)',
+                                    },
+                                    gap: 3,
+                                }}>
+                                    <Box>
                                         <TextField
                                             label="Category ID"
                                             value={filters.category}
@@ -336,9 +362,9 @@ const DashboardPage = () => {
                                             placeholder="e.g., CAT001"
                                             sx={textFieldStyle}
                                         />
-                                    </Grid>
+                                    </Box>
 
-                                    <Grid>
+                                    <Box>
                                         <TextField
                                             label="Product ID"
                                             value={filters.product}
@@ -348,9 +374,9 @@ const DashboardPage = () => {
                                             placeholder="e.g., PROD001"
                                             sx={textFieldStyle}
                                         />
-                                    </Grid>
+                                    </Box>
 
-                                    <Grid>
+                                    <Box>
                                         <TextField
                                             label="Start Date"
                                             type="date"
@@ -361,12 +387,12 @@ const DashboardPage = () => {
                                             variant="outlined"
                                             sx={textFieldStyle}
                                             InputProps={{
-                                                startAdornment: <DateRange sx={{mr: 1, color: '#6c757d'}}/>
+                                                startAdornment: <DateRange sx={{mr: 1, color: 'text.secondary'}}/>
                                             }}
                                         />
-                                    </Grid>
+                                    </Box>
 
-                                    <Grid>
+                                    <Box>
                                         <TextField
                                             label="End Date"
                                             type="date"
@@ -377,17 +403,17 @@ const DashboardPage = () => {
                                             variant="outlined"
                                             sx={textFieldStyle}
                                             InputProps={{
-                                                startAdornment: <DateRange sx={{mr: 1, color: '#6c757d'}}/>
+                                                startAdornment: <DateRange sx={{mr: 1, color: 'text.secondary'}}/>
                                             }}
                                         />
-                                    </Grid>
+                                    </Box>
 
-                                    <Grid>
+                                    <Box>
                                         <FormControl fullWidth>
                                             <InputLabel sx={{
                                                 fontWeight: 500,
-                                                color: '#495057',
-                                                '&.Mui-focused': {color: '#000000'}
+                                                color: 'text.secondary',
+                                                '&.Mui-focused': {color: 'primary.main'}
                                             }}>
                                                 Period
                                             </InputLabel>
@@ -420,13 +446,16 @@ const DashboardPage = () => {
                                                 </MenuItem>
                                             </Select>
                                         </FormControl>
-                                    </Grid>
+                                    </Box>
 
-                                    <Grid>
+                                    <Box sx={{ 
+                                        gridColumn: { xs: '1', md: '1 / -1' },
+                                        display: 'flex',
+                                        justifyContent: { xs: 'center', md: 'flex-end' },
+                                    }}>
                                         <Box sx={{
                                             display: 'flex',
                                             gap: 2,
-                                            justifyContent: {xs: 'center', lg: 'flex-end'},
                                             alignItems: 'center',
                                             flexWrap: 'wrap'
                                         }}>
@@ -451,14 +480,14 @@ const DashboardPage = () => {
                                                 Clear All
                                             </Button>
                                         </Box>
-                                    </Grid>
-                                </Grid>
+                                    </Box>
+                                </Box>
 
                                 <Box sx={{mt: 4}}>
                                     <Typography
                                         variant="subtitle1"
                                         sx={{
-                                            color: '#495057',
+                                            color: 'text.secondary',
                                             mb: 2,
                                             fontWeight: 600
                                         }}
@@ -510,7 +539,7 @@ const DashboardPage = () => {
                                             <Typography
                                                 variant="body2"
                                                 sx={{
-                                                    color: '#adb5bd',
+                                                    color: 'text.secondary',
                                                     fontStyle: 'italic',
                                                     py: 1
                                                 }}
@@ -535,13 +564,13 @@ const DashboardPage = () => {
                         }}>
                             <CircularProgress
                                 size={40}
-                                sx={{color: '#000000'}}
+                                sx={{color: 'primary.main'}}
                             />
                             <Typography
                                 variant="h6"
                                 sx={{
                                     ml: 3,
-                                    color: '#495057',
+                                    color: 'text.secondary',
                                     fontWeight: 500
                                 }}
                             >
@@ -556,27 +585,34 @@ const DashboardPage = () => {
 
                         <Fade in timeout={1400}>
                             <Card sx={{...modernCardStyle, mb: 3}}>
-                                <Grid
-                                    container
-                                    spacing={3}
-                                    sx={{mb: 4, mt: 3}}
-                                    justifyContent="center"
-                                    alignItems="center"
+                                <Box
+                                    sx={{
+                                        display: 'grid',
+                                        gridTemplateColumns: {
+                                            xs: '1fr',
+                                            sm: 'repeat(2, 1fr)',
+                                            md: 'repeat(4, 1fr)',
+                                        },
+                                        gap: 3,
+                                        mb: 4,
+                                        mt: 3,
+                                        px: 3,
+                                    }}
                                 >
-                                    <Grid>
+                                    <Box>
                                         <Grow in timeout={800}>
                                             <Card sx={kpiCardStyle}>
                                                 <CardContent sx={{p: 3}}>
                                                     <Box sx={{display: 'flex', alignItems: 'center', mb: 2}}>
                                                         <AttachMoney sx={{
                                                             fontSize: 32,
-                                                            color: '#000000',
+                                                            color: 'primary.main',
                                                             mr: 2
                                                         }}/>
                                                         <Typography
                                                             variant="h6"
                                                             sx={{
-                                                                color: '#495057',
+                                                                color: 'text.secondary',
                                                                 fontWeight: 600
                                                             }}
                                                         >
@@ -587,7 +623,7 @@ const DashboardPage = () => {
                                                         variant="h3"
                                                         sx={{
                                                             fontWeight: 800,
-                                                            color: '#000000',
+                                                            color: 'text.primary',
                                                             mb: 1
                                                         }}
                                                     >
@@ -596,7 +632,7 @@ const DashboardPage = () => {
                                                     {bestPeriod && (
                                                         <Typography
                                                             variant="body2"
-                                                            sx={{color: '#6c757d'}}
+                                                            sx={{color: 'text.secondary'}}
                                                         >
                                                             Best: {formatCurrency(bestPeriod.totalRevenue)}
                                                         </Typography>
@@ -604,22 +640,22 @@ const DashboardPage = () => {
                                                 </CardContent>
                                             </Card>
                                         </Grow>
-                                    </Grid>
+                                    </Box>
 
-                                    <Grid>
+                                    <Box>
                                         <Grow in timeout={600}>
                                             <Card sx={kpiCardStyle}>
                                                 <CardContent sx={{p: 3}}>
                                                     <Box sx={{display: 'flex', alignItems: 'center', mb: 2}}>
                                                         <ShoppingCart sx={{
                                                             fontSize: 32,
-                                                            color: '#000000',
+                                                            color: 'primary.main',
                                                             mr: 2
                                                         }}/>
                                                         <Typography
                                                             variant="h6"
                                                             sx={{
-                                                                color: '#495057',
+                                                                color: 'text.secondary',
                                                                 fontWeight: 600
                                                             }}
                                                         >
@@ -630,7 +666,7 @@ const DashboardPage = () => {
                                                         variant="h3"
                                                         sx={{
                                                             fontWeight: 800,
-                                                            color: '#000000',
+                                                            color: 'text.primary',
                                                             mb: 1
                                                         }}
                                                     >
@@ -639,7 +675,7 @@ const DashboardPage = () => {
                                                     {totalPeriods > 0 && (
                                                         <Typography
                                                             variant="body2"
-                                                            sx={{color: '#6c757d'}}
+                                                            sx={{color: 'text.secondary'}}
                                                         >
                                                             Across {totalPeriods} periods
                                                         </Typography>
@@ -647,31 +683,22 @@ const DashboardPage = () => {
                                                 </CardContent>
                                             </Card>
                                         </Grow>
-                                    </Grid>
+                                    </Box>
 
-                                </Grid>
-
-                                <Grid
-                                    container
-                                    spacing={3}
-                                    sx={{mb: 4, mt: 3}}
-                                    justifyContent="center"
-                                    alignItems="center"
-                                >
-                                    <Grid>
+                                    <Box>
                                         <Grow in timeout={1000}>
                                             <Card sx={kpiCardStyle}>
                                                 <CardContent sx={{p: 3}}>
                                                     <Box sx={{display: 'flex', alignItems: 'center', mb: 2}}>
                                                         <TrendingUp sx={{
                                                             fontSize: 32,
-                                                            color: '#000000',
+                                                            color: 'primary.main',
                                                             mr: 2
                                                         }}/>
                                                         <Typography
                                                             variant="h6"
                                                             sx={{
-                                                                color: '#495057',
+                                                                color: 'text.secondary',
                                                                 fontWeight: 600
                                                             }}
                                                         >
@@ -682,7 +709,7 @@ const DashboardPage = () => {
                                                         variant="h3"
                                                         sx={{
                                                             fontWeight: 800,
-                                                            color: '#000000',
+                                                            color: 'text.primary',
                                                             mb: 1
                                                         }}
                                                     >
@@ -690,29 +717,29 @@ const DashboardPage = () => {
                                                     </Typography>
                                                     <Typography
                                                         variant="body2"
-                                                        sx={{color: '#6c757d'}}
+                                                        sx={{color: 'text.secondary'}}
                                                     >
                                                         Per order
                                                     </Typography>
                                                 </CardContent>
                                             </Card>
                                         </Grow>
-                                    </Grid>
+                                    </Box>
 
-                                    <Grid>
+                                    <Box>
                                         <Grow in timeout={1200}>
                                             <Card sx={kpiCardStyle}>
                                                 <CardContent sx={{p: 3}}>
                                                     <Box sx={{display: 'flex', alignItems: 'center', mb: 2}}>
                                                         <Inventory sx={{
                                                             fontSize: 32,
-                                                            color: '#000000',
+                                                            color: 'primary.main',
                                                             mr: 2
                                                         }}/>
                                                         <Typography
                                                             variant="h6"
                                                             sx={{
-                                                                color: '#495057',
+                                                                color: 'text.secondary',
                                                                 fontWeight: 600
                                                             }}
                                                         >
@@ -723,7 +750,7 @@ const DashboardPage = () => {
                                                         variant="h3"
                                                         sx={{
                                                             fontWeight: 800,
-                                                            color: '#000000',
+                                                            color: 'text.primary',
                                                             mb: 1
                                                         }}
                                                     >
@@ -731,16 +758,16 @@ const DashboardPage = () => {
                                                     </Typography>
                                                     <Typography
                                                         variant="body2"
-                                                        sx={{color: '#6c757d'}}
+                                                        sx={{color: 'text.secondary'}}
                                                     >
                                                         Products sold
                                                     </Typography>
                                                 </CardContent>
                                             </Card>
                                         </Grow>
-                                    </Grid>
+                                    </Box>
 
-                                </Grid>
+                                </Box>
                             </Card>
                         </Fade>
 
@@ -754,7 +781,7 @@ const DashboardPage = () => {
                                                 sx={{
                                                     mb: 3,
                                                     fontWeight: 700,
-                                                    color: '#000000'
+                                                    color: 'text.primary'
                                                 }}
                                             >
                                                 Sales Trends ({getPeriodLabel()})
@@ -767,7 +794,7 @@ const DashboardPage = () => {
                                                     >
                                                         <CartesianGrid
                                                             strokeDasharray="3 3"
-                                                            stroke="#f1f3f4"
+                                                            stroke={theme.palette.divider}
                                                         />
                                                         <XAxis
                                                             dataKey="period"
@@ -775,17 +802,17 @@ const DashboardPage = () => {
                                                             angle={-45}
                                                             textAnchor="end"
                                                             height={80}
-                                                            stroke="#6c757d"
+                                                            stroke={theme.palette.text.secondary}
                                                         />
                                                         <YAxis
                                                             yAxisId="revenue"
                                                             orientation="left"
-                                                            stroke="#6c757d"
+                                                            stroke={theme.palette.text.secondary}
                                                         />
                                                         <YAxis
                                                             yAxisId="orders"
                                                             orientation="right"
-                                                            stroke="#6c757d"
+                                                            stroke={theme.palette.text.secondary}
                                                         />
                                                         <Tooltip
                                                             labelFormatter={formatPeriod}
@@ -796,31 +823,34 @@ const DashboardPage = () => {
                                                                 return [formatNumber(Number(value)), name];
                                                             }}
                                                             contentStyle={{
-                                                                backgroundColor: '#ffffff',
-                                                                border: '1px solid #e9ecef',
+                                                                backgroundColor: theme.palette.background.paper,
+                                                                border: `1px solid ${theme.palette.divider}`,
                                                                 borderRadius: '12px',
-                                                                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)'
+                                                                boxShadow: theme.palette.mode === 'dark'
+                                                                    ? '0 8px 32px rgba(0, 0, 0, 0.7)'
+                                                                    : '0 8px 32px rgba(0, 0, 0, 0.12)',
+                                                                color: theme.palette.text.primary,
                                                             }}
                                                         />
                                                         <Line
                                                             yAxisId="revenue"
                                                             type="monotone"
                                                             dataKey="totalRevenue"
-                                                            stroke="#000000"
+                                                            stroke={theme.palette.primary.main}
                                                             strokeWidth={3}
                                                             name="Revenue"
-                                                            dot={{r: 6, fill: '#000000'}}
-                                                            activeDot={{r: 8, fill: '#000000'}}
+                                                            dot={{r: 6, fill: theme.palette.primary.main}}
+                                                            activeDot={{r: 8, fill: theme.palette.primary.main}}
                                                         />
                                                         <Line
                                                             yAxisId="orders"
                                                             type="monotone"
                                                             dataKey="totalOrders"
-                                                            stroke="#666666"
+                                                            stroke={theme.palette.secondary.main}
                                                             strokeWidth={3}
                                                             name="Orders"
-                                                            dot={{r: 6, fill: '#666666'}}
-                                                            activeDot={{r: 8, fill: '#666666'}}
+                                                            dot={{r: 6, fill: theme.palette.secondary.main}}
+                                                            activeDot={{r: 8, fill: theme.palette.secondary.main}}
                                                         />
                                                     </LineChart>
                                                 </ResponsiveContainer>
@@ -837,7 +867,7 @@ const DashboardPage = () => {
                                                 sx={{
                                                     mb: 3,
                                                     fontWeight: 700,
-                                                    color: '#000000'
+                                                    color: 'text.primary'
                                                 }}
                                             >
                                                 Order Distribution ({getPeriodLabel()})
@@ -850,7 +880,7 @@ const DashboardPage = () => {
                                                     >
                                                         <CartesianGrid
                                                             strokeDasharray="3 3"
-                                                            stroke="#f1f3f4"
+                                                            stroke={theme.palette.divider}
                                                         />
                                                         <XAxis
                                                             dataKey="period"
@@ -858,22 +888,25 @@ const DashboardPage = () => {
                                                             angle={-45}
                                                             textAnchor="end"
                                                             height={80}
-                                                            stroke="#6c757d"
+                                                            stroke={theme.palette.text.secondary}
                                                         />
-                                                        <YAxis stroke="#6c757d"/>
+                                                        <YAxis stroke={theme.palette.text.secondary}/>
                                                         <Tooltip
                                                             labelFormatter={formatPeriod}
                                                             formatter={(value) => [formatNumber(Number(value)), 'Orders']}
                                                             contentStyle={{
-                                                                backgroundColor: '#ffffff',
-                                                                border: '1px solid #e9ecef',
+                                                                backgroundColor: theme.palette.background.paper,
+                                                                border: `1px solid ${theme.palette.divider}`,
                                                                 borderRadius: '12px',
-                                                                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)'
+                                                                boxShadow: theme.palette.mode === 'dark'
+                                                                    ? '0 8px 32px rgba(0, 0, 0, 0.7)'
+                                                                    : '0 8px 32px rgba(0, 0, 0, 0.12)',
+                                                                color: theme.palette.text.primary,
                                                             }}
                                                         />
                                                         <Bar
                                                             dataKey="totalOrders"
-                                                            fill="#000000"
+                                                            fill={theme.palette.primary.main}
                                                             name="Orders"
                                                             radius={[8, 8, 0, 0]}
                                                         />
@@ -897,13 +930,13 @@ const DashboardPage = () => {
                                         }}>
                                             <Analytics sx={{
                                                 fontSize: 80,
-                                                color: '#dee2e6',
+                                                color: 'action.disabled',
                                                 mb: 2
                                             }}/>
                                             <Typography
                                                 variant="h5"
                                                 sx={{
-                                                    color: '#6c757d',
+                                                    color: 'text.secondary',
                                                     fontWeight: 600,
                                                     mb: 1
                                                 }}
@@ -913,7 +946,7 @@ const DashboardPage = () => {
                                             <Typography
                                                 variant="body1"
                                                 sx={{
-                                                    color: '#adb5bd',
+                                                    color: 'text.secondary',
                                                     maxWidth: '400px'
                                                 }}
                                             >

@@ -68,7 +68,12 @@ export class ProductService implements OnModuleInit {
         }
         const product = await this.productRepository.findById(id);
         if (product?.imageUrl) {
-            await this.imageStorage.deleteImage(product.imageUrl);
+            try {
+                await this.imageStorage.deleteImage(product.imageUrl);
+            } catch (error: any) {
+                // Log and continue deleting the product to avoid blocking on missing/invalid image keys
+                console.warn('Image delete failed, continuing to delete product:', error?.message || error);
+            }
         }
         return this.productRepository.delete(id);
     }
