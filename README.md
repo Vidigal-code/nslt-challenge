@@ -1,5 +1,11 @@
 # NSLT Challenge – Full Stack Monorepo
 
+### 📹 Demonstration Video
+
+Check out the demonstration video:
+
+- [YouTube](https://www.youtube.com/watch?v=yNTw_hBnNIE)
+
 This repository contains the complete solution for the NSLT challenge: a full-stack platform built with **NestJS + MongoDB** (DDD + Hexagonal + CQRS), **React + Vite** following **Feature-Sliced Design**, and an **order notification lambda** implemented with the **Serverless Framework**. Everything runs locally through Docker/LocalStack and is covered by automated tests and CI.
 
 ## Highlights
